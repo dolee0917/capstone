@@ -1,0 +1,106 @@
+.mypage {
+  min-height: 100vh;
+  background: #f7f8fa;
+  padding: 50px 20px;
+}
+
+.mypage-card {
+  max-width: 760px;
+  margin: 0 auto 24px;
+  background: white;
+  border-radius: 24px;
+  padding: 34px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.mypage-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.mypage-avatar {
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #eef5ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+}
+
+.mypage-header h2 {
+  margin: 0;
+  font-size: 30px;
+  color: #222;
+}
+
+.mypage-header p {
+  color: #777;
+  margin-top: 8px;
+}
+
+.mypage-info,
+.mypage-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.mypage-info div,
+.mypage-summary div {
+  background: #f8f9fb;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.mypage-info span,
+.mypage-summary span {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.mypage-info strong,
+.mypage-summary strong {
+  font-size: 17px;
+  color: #222;
+}
+
+.mypage-edit-btn,
+.mypage-sub-btn {
+  width: 100%;
+  height: 50px;
+  margin-top: 26px;
+  border: none;
+  border-radius: 14px;
+  background: #6cab5b;
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mypage-sub-btn {
+  background: #eef2f7;
+  color: #333;
+}
+
+.mypage-edit-btn:hover,
+.mypage-sub-btn:hover {
+  opacity: 0.92;
+}
+
+.mypage-loading {
+  padding: 60px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .mypage-info,
+  .mypage-summary {
+    grid-template-columns: 1fr;
+  }
+}
