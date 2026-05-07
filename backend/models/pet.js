@@ -1,14 +1,20 @@
 const mongoose = require("mongoose");
 
 const petSchema = new mongoose.Schema({
-  name: String,        // 이름
-  type: String,        // 강아지, 고양이
-  age: Number,   
-  userId: String,      // 나이
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  name: String,
+  type: String,
+  breed: String,
+  gender: String,
+  neutered: String,
+  age: String,
+  weight: String,
+  personality: String,
+  feature: String,
+  image: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 module.exports = mongoose.model("Pet", petSchema);
