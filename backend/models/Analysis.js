@@ -51,6 +51,21 @@ const analysisSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+
+    behavior: {
+      type: String,
+      default: "",
+    },
+
+    solutions: [
+      {
+        text: String,
+        checked: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -186,8 +186,53 @@ function Pets() {
                       <p>
                         <strong>{item.petNames.join(" ↔ ")}</strong>
                       </p>
+
                       <p>{item.result}</p>
+
                       <span>분석 일시: {formatDateTime(item.dateTime)}</span>
+
+                      {item.behavior && (
+                        <p>
+                          <strong>선택 행동</strong> {item.behavior}
+                        </p>
+                      )}
+
+                      {item.solutions?.length > 0 && (
+                        <div className="analysis-solution-list">
+                          <strong>솔루션 체크리스트</strong>
+
+                          {item.solutions.map((solution, index) => (
+                            <label key={index} className="solution-item">
+                              <input
+                                type="checkbox"
+                                checked={solution.checked}
+                                onChange={async () => {
+                                  const updatedSolutions = item.solutions.map((s, i) =>
+                                    i === index ? { ...s, checked: !s.checked } : s
+                                  );
+
+                                  await fetch(
+                                    `http://localhost:5000/analysis/${item._id}/solutions`,
+                                    {
+                                      method: "PUT",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: localStorage.getItem("token"),
+                                      },
+                                      body: JSON.stringify({
+                                        solutions: updatedSolutions,
+                                      }),
+                                    }
+                                  );
+
+                                  fetchAnalysis();
+                                }}
+                              />
+                              <span>{solution.text}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))
               )}

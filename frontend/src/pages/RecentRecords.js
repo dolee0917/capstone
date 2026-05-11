@@ -75,6 +75,52 @@ function RecentRecords() {
                       <strong>상세 설명</strong>{" "}
                       {record.detail || "상세 설명이 없습니다."}
                     </p>
+                    {record.behavior && (
+                      <p>
+                        <strong>선택 행동</strong> {record.behavior}
+                      </p>
+                    )}
+
+                    {record.solutions?.length > 0 && (
+                      <div className="record-solution-list">
+                        <strong>솔루션 체크리스트</strong>
+
+                        {record.solutions.map((solution, index) => (
+                          <label key={index} className="solution-item">
+                            <input
+                              type="checkbox"
+                              checked={solution.checked}
+                              onChange={async (e) => {
+                                e.stopPropagation();
+
+                                const updatedSolutions = record.solutions.map((s, i) =>
+                                  i === index
+                                    ? { ...s, checked: !s.checked }
+                                    : s
+                                );
+
+                                await fetch(
+                                  `http://localhost:5000/analysis/${record._id}/solutions`,
+                                  {
+                                    method: "PUT",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                      Authorization: localStorage.getItem("token"),
+                                    },
+                                    body: JSON.stringify({
+                                      solutions: updatedSolutions,
+                                    }),
+                                  }
+                                );
+
+                                fetchRecords();
+                              }}
+                            />
+                            <span>{solution.text}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                     <p>
                       <strong>추천 행동</strong>{" "}
                       {record.recommendation || "추천 행동이 없습니다."}

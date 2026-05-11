@@ -56,7 +56,7 @@ console.log(process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("DB 연결 성공"))
-  .catch((err) => console.log(err));
+  .catch(err => console.log(err));
 
 // 테스트
 app.get("/", (req, res) => {
@@ -285,6 +285,8 @@ app.post("/analysis", auth, async (req, res) => {
       petIds,
       petNames,
       result,
+      behavior,
+      solutions,
       score,
       summary,
       detail,
@@ -297,6 +299,8 @@ app.post("/analysis", auth, async (req, res) => {
       petIds,
       petNames,
       result,
+      behavior,
+      solutions,
       score,
       summary,
       detail,
@@ -321,6 +325,29 @@ app.get("/analysis", auth, async (req, res) => {
     res.json(analysisList);
   } catch (error) {
     res.status(500).json({ error: "분석 결과 조회 실패" });
+  }
+});
+
+app.put("/analysis/:id/solutions", auth, async (req, res) => {
+  try {
+    const { solutions } = req.body;
+
+    const updatedAnalysis = await Analysis.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.userId,
+      },
+      { solutions },
+      { new: true }
+    );
+
+    if (!updatedAnalysis) {
+      return res.status(404).json({ error: "분석 기록을 찾을 수 없습니다." });
+    }
+
+    res.json(updatedAnalysis);
+  } catch (error) {
+    res.status(500).json({ error: "체크리스트 저장 실패" });
   }
 });
 
