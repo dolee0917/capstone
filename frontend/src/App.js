@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import RecentRecords from "./pages/RecentRecords";
 import { FaDog, FaCat, FaCrow, FaFish, FaPaw } from "react-icons/fa";
 import { GiRabbit, GiTurtle } from "react-icons/gi";
+import PetDetail from "./pages/PetDetail";
 
 import "./App.css";
 
@@ -268,6 +269,18 @@ function App() {
               <>
                 <Navbar logout={logout} />
                 <RecentRecords />
+              </>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/pets/:id"
+          element={
+            <PrivateRoute>
+              <>
+                <Navbar logout={logout} />
+                <PetDetail />
               </>
             </PrivateRoute>
           }
