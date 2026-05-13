@@ -663,6 +663,42 @@ function Analysis({ logout }) {
     };
   };
 
+  const getMissionBySolution = (text, stage) => {
+      if (stage === 1) {
+        return {
+          title: "안전 거리 확보 미션",
+          description: "오늘 하루 동안 두 반려동물이 불필요하게 가까워지지 않도록 보호자가 공간을 분리해 주세요.",
+          successCondition: "싸움, 추격, 강한 스트레스 반응 없이 하루를 보내면 성공",
+          completed: false,
+        };
+      }
+
+      if (stage === 2) {
+        return {
+          title: "환경 세팅 미션",
+          description: "각 반려동물이 편하게 쉴 수 있는 공간, 은신처, 식사 공간을 준비해 주세요.",
+          successCondition: "각자의 공간에서 안정적으로 머무르면 성공",
+          completed: false,
+        };
+      }
+
+      if (stage === 3) {
+        return {
+          title: "짧은 적응 훈련 미션",
+          description: "보호자가 지켜보는 상태에서 짧은 시간 동안 서로를 관찰하게 해주세요.",
+          successCondition: "하악질, 짖음, 추격, 공격 행동 없이 5분 이상 유지하면 성공",
+          completed: false,
+        };
+      }
+
+      return {
+        title: "긍정 경험 만들기 미션",
+        description: "두 반려동물이 같은 공간에서 편안한 경험을 할 수 있도록 간식, 칭찬, 산책 등을 활용해 주세요.",
+        successCondition: "보호자의 칭찬 또는 보상과 함께 차분한 상태를 유지하면 성공",
+        completed: false,
+      };
+    };
+
   const runAnalysis = async () => {
     const p1 = pets.find((p) => p._id === selectedPet1);
     const p2 = pets.find((p) => p._id === selectedPet2);
@@ -686,12 +722,13 @@ function Analysis({ logout }) {
       behavior: "",
       solutions: result.recommendation.map((item) => {
         const stageInfo = getSolutionStage(item);
-
+        const mission = getMissionBySolution(item, stageInfo.stage);
         return {
           text: item,
           checked: false,
           stage: stageInfo.stage,
           stageTitle: stageInfo.stageTitle,
+          mission,
         };
       }),
       dateTime: new Date(),

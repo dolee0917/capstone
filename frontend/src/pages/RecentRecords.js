@@ -145,6 +145,58 @@ function RecentRecords() {
                                     />
 
                                     <span>{solution.text}</span>
+                                    {solution.mission && (
+                                    <div className="mission-box" onClick={(e) => e.stopPropagation()}>
+                                      <h5>🎯 {solution.mission.title}</h5>
+                                      <p>{solution.mission.description}</p>
+                                      <div className="mission-bottom-row">
+                                      <p className="mission-condition">
+                                        <strong>성공 조건:</strong> {solution.mission.successCondition}
+                                      </p>
+
+                                      <button
+                                        className={
+                                          solution.mission.completed
+                                            ? "mission-complete-btn done"
+                                            : "mission-complete-btn"
+                                        }
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+
+                                          const updatedSolutions = record.solutions.map((s) =>
+                                            s.text === solution.text
+                                              ? {
+                                                  ...s,
+                                                  mission: {
+                                                    ...s.mission,
+                                                    completed: !s.mission?.completed,
+                                                  },
+                                                }
+                                              : s
+                                          );
+
+                                          await fetch(
+                                            `http://localhost:5000/analysis/${record._id}/solutions`,
+                                            {
+                                              method: "PUT",
+                                              headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: localStorage.getItem("token"),
+                                              },
+                                              body: JSON.stringify({
+                                                solutions: updatedSolutions,
+                                              }),
+                                            }
+                                          );
+
+                                          fetchRecords();
+                                        }}
+                                      >
+                                        {solution.mission.completed ? "미션 완료됨" : "미션 완료하기"}
+                                      </button>
+                                      </div>
+                                    </div>
+                                  )}
                                   </label>
                                 ))}
                               </div>

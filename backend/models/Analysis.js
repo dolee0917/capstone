@@ -58,22 +58,44 @@ const analysisSchema = new mongoose.Schema(
     },
 
     solutions: [
-      {
-        text: String,
-        stage: {
-          type: Number,
-          default: 2,
-        },
-        stageTitle: {
+    {
+      text: String,
+
+      stage: {
+        type: Number,
+        default: 2,
+      },
+
+      stageTitle: {
+        type: String,
+        default: "환경 준비",
+      },
+
+      mission: {
+        title: {
           type: String,
-          default: "환경 준비",
+          default: "",
         },
-        checked: {
+        description: {
+          type: String,
+          default: "",
+        },
+        successCondition: {
+          type: String,
+          default: "",
+        },
+        completed: {
           type: Boolean,
           default: false,
         },
       },
-    ],
+
+      checked: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
   },
   {
     timestamps: true,

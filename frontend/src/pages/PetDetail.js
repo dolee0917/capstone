@@ -62,6 +62,23 @@ function PetDetail() {
     setAnalysisList(Array.isArray(data) ? data : []);
   };
 
+  const updateAnalysisSolutions = async (analysisId, updatedSolutions) => {
+  await fetch(`http://localhost:5000/analysis/${analysisId}/solutions`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      solutions: updatedSolutions,
+    }),
+  });
+
+  fetchAnalysis();
+};
+
+
+
   if (!pet) {
     return <div className="pet-detail-page">불러오는 중...</div>;
   }
@@ -128,16 +145,78 @@ function PetDetail() {
               )}
 
               {item.solutions?.length > 0 && (
-                <div>
-                  <strong>솔루션 체크리스트</strong>
-                  {item.solutions.map((solution, index) => (
-                    <label key={index} className="solution-item">
-                      <input type="checkbox" checked={solution.checked} readOnly />
-                      <span>{solution.text}</span>
-                    </label>
-                  ))}
+  <div className="record-solution-list">
+    <strong>단계별 솔루션 & 미션</strong>
+
+    {[1, 2, 3, 4].map((stage) => {
+      const stageSolutions = item.solutions.filter(
+        (solution) => solution.stage === stage
+      );
+
+      if (stageSolutions.length === 0) return null;
+
+      const stageTitle = stageSolutions[0].stageTitle || "솔루션 단계";
+
+      return (
+        <div key={stage} className="solution-stage-box">
+          <h4>
+            {stage}단계. {stageTitle}
+          </h4>
+
+          {stageSolutions.map((solution) => (
+            <div key={solution._id || solution.text} className="solution-mission-item">
+              <label className="solution-item">
+                <input type="checkbox" checked={solution.checked} readOnly />
+                <span>{solution.text}</span>
+              </label>
+
+              {solution.mission && (
+                <div className="mission-box">
+                  <h5>🎯 {solution.mission.title}</h5>
+                  <p>{solution.mission.description}</p>
+
+                  <div className="mission-bottom-row">
+                    <p className="mission-condition">
+                      <strong>성공 조건:</strong>{" "}
+                      {solution.mission.successCondition}
+                    </p>
+
+                    <button
+                      className={
+                        solution.mission.completed
+                          ? "mission-complete-btn done"
+                          : "mission-complete-btn"
+                      }
+                      onClick={() => {
+                        const updatedSolutions = item.solutions.map((s) =>
+                          s.text === solution.text
+                            ? {
+                                ...s,
+                                mission: {
+                                  ...s.mission,
+                                  completed: !s.mission?.completed,
+                                },
+                              }
+                            : s
+                        );
+
+                        updateAnalysisSolutions(item._id, updatedSolutions);
+                      }}
+                    >
+                      {solution.mission.completed
+                        ? "미션 완료됨"
+                        : "미션 완료하기"}
+                    </button>
+                  </div>
                 </div>
               )}
+            </div>
+          ))}
+        </div>
+      );
+    })}
+  </div>
+)}
             </div>
           ))
         )}
