@@ -357,6 +357,31 @@ app.put("/analysis/:id/solutions", auth, async (req, res) => {
   }
 });
 
+app.put("/analysis/:id/today-mission", auth, async (req, res) => {
+  try {
+    const { todayMissionCompleted } = req.body;
+
+    const updatedAnalysis = await Analysis.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        userId: req.userId,
+      },
+      { todayMissionCompleted },
+      { new: true }
+    );
+
+    if (!updatedAnalysis) {
+      return res.status(404).json({ error: "분석 기록을 찾을 수 없습니다." });
+    }
+
+    res.json(updatedAnalysis);
+  } catch (error) {
+    res.status(500).json({ error: "오늘의 미션 저장 실패" });
+  }
+});
+
+
+
 
 // 서버 실행
 app.listen(5000, () => {

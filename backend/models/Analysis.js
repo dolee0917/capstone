@@ -111,6 +111,12 @@ const analysisSchema = new mongoose.Schema(
       },
     },
   ],
+
+  todayMissionCompleted: {
+  type: Boolean,
+  default: false,
+},
+
   },
   {
     timestamps: true,
