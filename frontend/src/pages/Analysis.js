@@ -883,7 +883,17 @@ const getBehaviorInfo = (behavior) => {
 
       <div className="card">
 
-        <div className="pet-select-area">
+        <div className="analysis-step-box">
+          <div className="step-header">
+            <span className="step-badge">STEP 1</span>
+            <h3>반려동물 선택</h3>
+          </div>
+
+          <p className="step-desc">
+            관계를 분석할 두 반려동물을 선택해주세요.
+          </p>
+          
+           <div className="pet-select-area">
           <div className="pet-select-column">
             <h4>첫 번째 반려동물</h4>
 
@@ -892,12 +902,21 @@ const getBehaviorInfo = (behavior) => {
                 <button
                   key={pet._id}
                   type="button"
+                  disabled={selectedPet2 === pet._id}
                   className={
-                    selectedPet1 === pet._id
+                    selectedPet2 === pet._id
+                      ? "pet-choice-card disabled"
+                      : selectedPet1 === pet._id
                       ? "pet-choice-card selected"
                       : "pet-choice-card"
                   }
-                  onClick={() => setSelectedPet1(pet._id)}
+                  onClick={() => {
+                    setSelectedPet1(pet._id);
+
+                    if (selectedPet2 === pet._id) {
+                      setSelectedPet2("");
+                    }
+                  }}
                 >
                   <div className="pet-choice-icon">
                     {pet.image ? (
@@ -929,8 +948,11 @@ const getBehaviorInfo = (behavior) => {
                 <button
                   key={pet._id}
                   type="button"
+                  disabled={selectedPet1 === pet._id}
                   className={
-                    selectedPet2 === pet._id
+                    selectedPet1 === pet._id
+                      ? "pet-choice-card disabled"
+                      : selectedPet2 === pet._id
                       ? "pet-choice-card selected"
                       : "pet-choice-card"
                   }
@@ -956,15 +978,7 @@ const getBehaviorInfo = (behavior) => {
             </div>
           </div>
         </div>
-        <div className="analysis-step-box">
-          <div className="step-header">
-            <span className="step-badge">STEP 1</span>
-            <h3>반려동물 선택</h3>
-          </div>
 
-          <p className="step-desc">
-            관계를 분석할 두 반려동물을 선택해주세요.
-          </p>
         </div>
 
         <div className="analysis-step-box">

@@ -57,6 +57,21 @@ const analysisSchema = new mongoose.Schema(
       default: "",
     },
 
+    behaviorCategory: {
+      type: String,
+      default: "",
+    },
+
+    scoreImpact: {
+      type: Number,
+      default: 0,
+    },
+
+    relationshipTrend: {
+      type: String,
+      default: "",
+    },
+
     solutions: [
     {
       text: String,

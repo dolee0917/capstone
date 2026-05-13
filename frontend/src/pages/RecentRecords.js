@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 import "./RecentRecords.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from "recharts";
 
 function RecentRecords() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
   const [openId, setOpenId] = useState(null);
+  const [selectedPair, setSelectedPair] = useState("");
 
   useEffect(() => {
     fetchRecords();
@@ -25,10 +37,103 @@ function RecentRecords() {
     record.petNames?.join(" ").toLowerCase().includes(search.toLowerCase())
   );
 
+  const getPairKey = (petNames = []) => {
+    return [...petNames].sort().join(" ↔ ");
+  };
+
+  const pairOptions = [
+    ...new Set(records.map((record) => getPairKey(record.petNames))),
+  ].filter(Boolean);
+
+  const pairFilteredRecords = selectedPair
+    ? records.filter(
+        (record) =>
+          getPairKey(record.petNames) === selectedPair
+      )
+    : records;
+
+  const chartData = [...pairFilteredRecords]
+    .reverse()
+    .map((record, index) => ({
+      name: `${index + 1}회`,
+      score: record.score || 0,
+      behavior: record.behavior || "미선택",
+      category: record.behaviorCategory || "기타",
+    }));
+
+  const harmonyCount = records.filter(
+    (record) => record.relationshipTrend === "harmony"
+  ).length;
+
+
+  const conflictCount = records.filter(
+    (record) => record.relationshipTrend === "conflict"
+  ).length;
+
+  const stressCount = records.filter(
+    (record) => record.relationshipTrend === "stress"
+  ).length;
+
+  const barData = [
+    { name: "화합", count: harmonyCount },
+    { name: "갈등", count: conflictCount },
+    { name: "스트레스", count: stressCount },
+  ];
+
   return (
     <div className="records-page">
       <div className="records-container">
         <h2>📋 최근 기록보기</h2>
+
+        <div className="pair-select-box">
+          <label>조합 선택</label>
+
+          <select
+            className="records-search"
+            value={selectedPair}
+            onChange={(e) => setSelectedPair(e.target.value)}
+          >
+            <option value="">전체 조합 보기</option>
+
+            {pairOptions.map((pair) => (
+              <option key={pair} value={pair}>
+                {pair}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="record-chart-section">
+        <h3>📈 관계 변화 그래프</h3>
+
+        <div className="chart-card">
+          <h4>관계 점수 변화</h4>
+
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis domain={[0, 100]} />
+              <Tooltip />
+              <Line type="monotone" dataKey="score" strokeWidth={3} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-card">
+          <h4>행동 유형 통계</h4>
+
+          <ResponsiveContainer width="100%" height={240}>
+            <BarChart data={barData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="count" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
         <input
           className="records-search"
