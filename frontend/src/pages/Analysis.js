@@ -8,7 +8,7 @@ function Analysis({ logout }) {
   const [selectedPet1, setSelectedPet1] = useState("");
   const [selectedPet2, setSelectedPet2] = useState("");
   const [analysis, setAnalysis] = useState(null);
-
+  const [selectedBehavior, setSelectedBehavior] = useState("");
   useEffect(() => {
     fetchPets();
   }, []);
@@ -27,6 +27,116 @@ function Analysis({ logout }) {
       console.error(err);
     }
   };
+
+  const behaviorOptions = [
+  {
+    category: "⚡ 갈등 및 경계",
+    items: [
+      "공격성 보임 (하악질, 으르렁)",
+      "서로 노려보며 대치함",
+      "밥그릇 근처 경계",
+      "식사/화장실 근처 경계",
+      "장난감 독점",
+      "추격 행동",
+      "위협 자세 보임",
+    ],
+  },
+  {
+    category: "🍀 화합 및 긍정",
+    items: [
+      "서로 냄새 맡기",
+      "가까이 휴식",
+      "함께 놀이",
+      "함께 장난치며 놀이함",
+      "그루밍",
+      "보호자 주변 함께 있기",
+      "차분히 공존",
+    ],
+  },
+  {
+    category: "😟 스트레스 및 회피",
+    items: [
+      "숨기",
+      "떨기",
+      "반복 울음",
+      "과도한 경계",
+      "식욕 감소",
+      "특정 공간 회피",
+      "움직임 감소",
+    ],
+  },
+  {
+    category: "❓ 기타",
+    items: [
+      "처음 만남",
+      "행동 판단 어려움",
+      "일시적 긴장 상태",
+      "관찰 필요",
+    ],
+  },
+];
+
+const getBehaviorInfo = (behavior) => {
+  if (
+    [
+      "공격성 보임 (하악질, 으르렁)",
+      "서로 노려보며 대치함",
+      "밥그릇 근처 경계",
+      "식사/화장실 근처 경계",
+      "장난감 독점",
+      "추격 행동",
+      "위협 자세 보임",
+    ].includes(behavior)
+  ) {
+    return {
+      category: "갈등",
+      scoreImpact: -15,
+      trend: "conflict",
+    };
+  }
+
+  if (
+    [
+      "서로 냄새 맡기",
+      "가까이 휴식",
+      "함께 놀이",
+      "함께 장난치며 놀이함",
+      "그루밍",
+      "보호자 주변 함께 있기",
+      "차분히 공존",
+    ].includes(behavior)
+  ) {
+    return {
+      category: "화합",
+      scoreImpact: 15,
+      trend: "harmony",
+    };
+  }
+
+  if (
+    [
+      "숨기",
+      "떨기",
+      "반복 울음",
+      "과도한 경계",
+      "식욕 감소",
+      "특정 공간 회피",
+      "움직임 감소",
+    ].includes(behavior)
+  ) {
+    return {
+      category: "스트레스",
+      scoreImpact: -8,
+      trend: "stress",
+    };
+  }
+
+  return {
+    category: "관찰",
+    scoreImpact: 0,
+    trend: "observe",
+  };
+};
 
   const analyzePets = (p1, p2) => {
 
@@ -704,6 +814,16 @@ function Analysis({ logout }) {
     const p2 = pets.find((p) => p._id === selectedPet2);
 
     const result = analyzePets(p1, p2);
+    const behaviorInfo = getBehaviorInfo(selectedBehavior);
+
+      result.score = Math.max(
+        0,
+        Math.min(100, result.score + behaviorInfo.scoreImpact)
+      );
+
+      result.behavior = selectedBehavior;
+      result.behaviorCategory = behaviorInfo.category;
+      result.relationshipTrend = behaviorInfo.trend;
 
     setAnalysis(result);
 
@@ -719,7 +839,10 @@ function Analysis({ logout }) {
       summary: result.result,
       detail: result.detail,
       recommendation: result.recommendation.join(", "),
-      behavior: "",
+      behavior: selectedBehavior,
+      behaviorCategory: behaviorInfo.category,
+      scoreImpact: behaviorInfo.scoreImpact,
+      relationshipTrend: behaviorInfo.trend,
       solutions: result.recommendation.map((item) => {
         const stageInfo = getSolutionStage(item);
         const mission = getMissionBySolution(item, stageInfo.stage);
@@ -760,41 +883,153 @@ function Analysis({ logout }) {
 
       <div className="card">
 
-        <select
-          className="input"
-          value={selectedPet1}
-          onChange={(e) => setSelectedPet1(e.target.value)}
-        >
-          <option value="">첫 번째 반려동물 선택</option>
+        <div className="pet-select-area">
+          <div className="pet-select-column">
+            <h4>첫 번째 반려동물</h4>
 
-          {pets.map((pet) => (
-            <option key={pet._id} value={pet._id}>
-              {pet.name} ({pet.type})
-            </option>
-          ))}
-        </select>
+            <div className="pet-choice-list">
+              {pets.map((pet) => (
+                <button
+                  key={pet._id}
+                  type="button"
+                  className={
+                    selectedPet1 === pet._id
+                      ? "pet-choice-card selected"
+                      : "pet-choice-card"
+                  }
+                  onClick={() => setSelectedPet1(pet._id)}
+                >
+                  <div className="pet-choice-icon">
+                    {pet.image ? (
+                      <img
+                        src={`http://localhost:5000${pet.image}`}
+                        alt={pet.name}
+                        className="pet-choice-img"
+                      />
+                    ) : (
+                      <span>🐾</span>
+                    )}
+                  </div>
+                  <div>
+                    <strong>{pet.name}</strong>
+                    <span>{pet.type}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="pet-vs-badge">↔</div>
+
+          <div className="pet-select-column">
+            <h4>두 번째 반려동물</h4>
+
+            <div className="pet-choice-list">
+              {pets.map((pet) => (
+                <button
+                  key={pet._id}
+                  type="button"
+                  className={
+                    selectedPet2 === pet._id
+                      ? "pet-choice-card selected"
+                      : "pet-choice-card"
+                  }
+                  onClick={() => setSelectedPet2(pet._id)}
+                >
+                  <div className="pet-choice-icon">
+                    {pet.image ? (
+                      <img
+                        src={`http://localhost:5000${pet.image}`}
+                        alt={pet.name}
+                        className="pet-choice-img"
+                      />
+                    ) : (
+                      <span>🐾</span>
+                    )}
+                  </div>
+                  <div>
+                    <strong>{pet.name}</strong>
+                    <span>{pet.type}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="analysis-step-box">
+          <div className="step-header">
+            <span className="step-badge">STEP 1</span>
+            <h3>반려동물 선택</h3>
+          </div>
+
+          <p className="step-desc">
+            관계를 분석할 두 반려동물을 선택해주세요.
+          </p>
+        </div>
+
+        <div className="analysis-step-box">
+          <div className="step-header">
+            <span className="step-badge">STEP 2</span>
+            <h3>현재 행동 선택</h3>
+          </div>
+
+          <p className="step-desc">
+            최근 두 반려동물 사이에서 관찰된 행동을 선택해주세요.
+          </p>
+
+          <div className="behavior-group-list">
+            {behaviorOptions.map((group) => (
+              <div key={group.category} className="behavior-group">
+                <h4>{group.category}</h4>
+
+                <div className="behavior-button-wrap">
+                  {group.items.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      className={
+                        selectedBehavior === item
+                          ? "behavior-chip selected"
+                          : "behavior-chip"
+                      }
+                      onClick={() => setSelectedBehavior(item)}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="selected-preview-card">
+          <h4>📌 현재 선택 상태</h4>
+
+          <p>
+            <strong>반려동물:</strong>{" "}
+            {pets.find((p) => p._id === selectedPet1)?.name || "첫 번째 반려동물"} ↔{" "}
+            {pets.find((p) => p._id === selectedPet2)?.name || "두 번째 반려동물"}
+          </p>
+
+          <p>
+            <strong>관찰 행동:</strong>{" "}
+            {selectedBehavior || "아직 행동을 선택하지 않았습니다."}
+          </p>
+        </div>
+
+        <div className="analysis-step-box">
+          <div className="step-header">
+            <span className="step-badge">STEP 3</span>
+            <h3>관계 분석 시작</h3>
+          </div>
+
+          <button className="analysis-main-btn" onClick={runAnalysis}>
+            🔍 관계 분석 시작하기
+          </button>
+        </div>
 
         <br /><br />
-
-        <select
-          className="input"
-          value={selectedPet2}
-          onChange={(e) => setSelectedPet2(e.target.value)}
-        >
-          <option value="">두 번째 반려동물 선택</option>
-
-          {pets.map((pet) => (
-            <option key={pet._id} value={pet._id}>
-              {pet.name} ({pet.type})
-            </option>
-          ))}
-        </select>
-
-        <br /><br />
-
-        <button className="button" onClick={runAnalysis}>
-          🔍 분석하기
-        </button>
 
       </div>
 
@@ -803,6 +1038,11 @@ function Analysis({ logout }) {
         <div className="card result-box">
 
           <h3>{analysis.result}</h3>
+          {analysis.behavior && (
+            <p className="selected-behavior">
+              <strong>선택 행동:</strong> {analysis.behavior}
+            </p>
+          )}
 
           <p style={{ whiteSpace: "pre-line" }}>
             {analysis.detail}
