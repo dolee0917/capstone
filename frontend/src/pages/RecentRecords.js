@@ -82,45 +82,76 @@ function RecentRecords() {
                     )}
 
                     {record.solutions?.length > 0 && (
-                      <div className="record-solution-list">
-                        <strong>솔루션 체크리스트</strong>
+                        <div className="record-solution-list" onClick={(e) => e.stopPropagation()}>
+                          <strong>단계별 솔루션</strong>
 
-                        {record.solutions.map((solution, index) => (
-                          <label key={index} className="solution-item">
-                            <input
-                              type="checkbox"
-                              checked={solution.checked}
-                              onChange={async (e) => {
-                                e.stopPropagation();
+                          {[1, 2, 3, 4].map((stage) => {
+                            const stageSolutions = record.solutions.filter(
+                              (solution) => solution.stage === stage
+                            );
 
-                                const updatedSolutions = record.solutions.map((s, i) =>
-                                  i === index
-                                    ? { ...s, checked: !s.checked }
-                                    : s
-                                );
+                            if (stageSolutions.length === 0) return null;
 
-                                await fetch(
-                                  `http://localhost:5000/analysis/${record._id}/solutions`,
-                                  {
-                                    method: "PUT",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                      Authorization: localStorage.getItem("token"),
-                                    },
-                                    body: JSON.stringify({
-                                      solutions: updatedSolutions,
-                                    }),
-                                  }
-                                );
+                            const stageTitle = stageSolutions[0].stageTitle || "솔루션 단계";
 
-                                fetchRecords();
-                              }}
-                            />
-                            <span>{solution.text}</span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                            return (
+                              <div key={stage} className="solution-stage-box">
+                                <h4>
+                                  {stage}단계. {stageTitle}
+                                </h4>
+
+                                {stage === 2 &&
+                                  record.solutions.some(
+                                    (solution) => solution.stage === 1 && !solution.checked
+                                  ) && (
+                                    <p className="stage-warning">
+                                      ⚠️ 먼저 1단계 안전 확보를 완료하는 것을 권장합니다.
+                                    </p>
+                                  )}
+
+                                {stageSolutions.map((solution) => (
+                                  <label
+                                    key={solution._id || solution.text}
+                                    className="solution-item"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={solution.checked}
+                                      onClick={(e) => e.stopPropagation()}
+                                      onChange={async () => {
+                                        const updatedSolutions = record.solutions.map((s) =>
+                                          s.text === solution.text
+                                            ? { ...s, checked: !s.checked }
+                                            : s
+                                        );
+
+                                        await fetch(
+                                          `http://localhost:5000/analysis/${record._id}/solutions`,
+                                          {
+                                            method: "PUT",
+                                            headers: {
+                                              "Content-Type": "application/json",
+                                              Authorization: localStorage.getItem("token"),
+                                            },
+                                            body: JSON.stringify({
+                                              solutions: updatedSolutions,
+                                            }),
+                                          }
+                                        );
+
+                                        fetchRecords();
+                                      }}
+                                    />
+
+                                    <span>{solution.text}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     <p>
                       <strong>추천 행동</strong>{" "}
                       {record.recommendation || "추천 행동이 없습니다."}

@@ -60,6 +60,14 @@ const analysisSchema = new mongoose.Schema(
     solutions: [
       {
         text: String,
+        stage: {
+          type: Number,
+          default: 2,
+        },
+        stageTitle: {
+          type: String,
+          default: "환경 준비",
+        },
         checked: {
           type: Boolean,
           default: false,

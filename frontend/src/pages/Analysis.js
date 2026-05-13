@@ -607,14 +607,113 @@ function Analysis({ logout }) {
     return analysisMap[types] || analysisMap.default;
   };
 
-  const runAnalysis = () => {
+  const getSolutionStage = (text) => {
+    const safetyKeywords = [
+      "분리", "차단", "금지", "직접 접촉", "접근 금지",
+      "말리지 않기", "주의 분산", "비행 시간"
+    ];
 
+    const environmentKeywords = [
+      "공간", "은신처", "숨숨집", "케이지", "사육장",
+      "캣타워", "높이", "열원", "온도", "습도",
+      "보호망", "식사 공간", "장난감", "횃대"
+    ];
+
+    const observationKeywords = [
+      "관찰", "기다리기", "재소개", "시선 교환",
+      "페로몬", "짧은 시간", "괴롭힘"
+    ];
+
+    const maintenanceKeywords = [
+      "산책", "소음 최소화", "유지", "관리", "방해하지 않기",
+      "먹이 경쟁", "암수 분리"
+    ];
+
+    if (safetyKeywords.some((keyword) => text.includes(keyword))) {
+      return {
+        stage: 1,
+        stageTitle: "즉시 안전 확보",
+      };
+    }
+
+    if (environmentKeywords.some((keyword) => text.includes(keyword))) {
+      return {
+        stage: 2,
+        stageTitle: "환경 준비",
+      };
+    }
+
+    if (observationKeywords.some((keyword) => text.includes(keyword))) {
+      return {
+        stage: 3,
+        stageTitle: "적응 및 관찰",
+      };
+    }
+
+    if (maintenanceKeywords.some((keyword) => text.includes(keyword))) {
+      return {
+        stage: 4,
+        stageTitle: "유지 관리",
+      };
+    }
+
+    return {
+      stage: 2,
+      stageTitle: "환경 준비",
+    };
+  };
+
+  const runAnalysis = async () => {
     const p1 = pets.find((p) => p._id === selectedPet1);
     const p2 = pets.find((p) => p._id === selectedPet2);
 
     const result = analyzePets(p1, p2);
 
     setAnalysis(result);
+
+    if (!p1 || !p2) {
+      return;
+    }
+
+    const saveData = {
+      petIds: [p1._id, p2._id],
+      petNames: [p1.name, p2.name],
+      result: result.result,
+      score: result.score,
+      summary: result.result,
+      detail: result.detail,
+      recommendation: result.recommendation.join(", "),
+      behavior: "",
+      solutions: result.recommendation.map((item) => {
+        const stageInfo = getSolutionStage(item);
+
+        return {
+          text: item,
+          checked: false,
+          stage: stageInfo.stage,
+          stageTitle: stageInfo.stageTitle,
+        };
+      }),
+      dateTime: new Date(),
+    };
+
+    const res = await fetch("http://localhost:5000/analysis", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token"),
+      },
+      body: JSON.stringify(saveData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || "분석 결과 저장 실패");
+      return;
+    }
+
+    console.log("분석 저장 완료:", data);
   };
 
     return (

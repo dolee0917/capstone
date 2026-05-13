@@ -81,3 +81,25 @@
   color: #777;
   margin-top: 60px;
 }
+
+.solution-stage-box {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #f0dfc2;
+}
+
+.solution-stage-box h4 {
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.stage-warning {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  background: #fff4e5;
+  border-radius: 10px;
+  color: #9a5a00;
+  font-size: 14px;
+}
