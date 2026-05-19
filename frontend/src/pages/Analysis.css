@@ -318,3 +318,111 @@
   transform: none;
   border-color: #ddd;
 }
+
+.analysis-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 26px 0 30px;
+}
+
+.progress-step {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.progress-step.active {
+  background: #6cab5b;
+  color: white;
+}
+
+.progress-line {
+  width: 90px;
+  height: 4px;
+  background: #e5e7eb;
+}
+
+.progress-line.active {
+  background: #6cab5b;
+}
+
+.analysis-step-screen {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 34px;
+  border-radius: 28px;
+  background: white;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+  animation: stepFade 0.35s ease;
+}
+
+@keyframes stepFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.analysis-next-btn,
+.analysis-prev-btn {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.analysis-next-btn {
+  background: #6cab5b;
+  color: white;
+}
+
+.analysis-prev-btn {
+  background: #eef2f7;
+  color: #333;
+}
+
+.analysis-next-btn:hover,
+.analysis-prev-btn:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .analysis-step-screen {
+    padding: 22px;
+  }
+
+  .progress-line {
+    width: 44px;
+  }
+
+  .step-button-row {
+    flex-direction: column;
+  }
+
+  .analysis-next-btn,
+  .analysis-prev-btn {
+    width: 100%;
+  }
+}

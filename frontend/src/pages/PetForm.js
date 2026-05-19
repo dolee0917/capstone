@@ -188,7 +188,11 @@ function PetForm() {
     });
 
     alert(isEditMode ? "수정 완료!" : "등록 완료!");
-    navigate("/pets");
+    if (isEditMode) {
+      navigate(`/pets/${id}`);
+    } else {
+      navigate("/pets");
+    }
   };
 
   return (
@@ -364,7 +368,13 @@ function PetForm() {
 
           <button
             className="petform-btn secondary"
-            onClick={() => navigate("/pets")}
+            onClick={() => {
+              if (isEditMode) {
+                navigate(`/pets/${id}`);
+              } else {
+                navigate("/pets");
+              }
+            }}
           >
             취소
           </button>

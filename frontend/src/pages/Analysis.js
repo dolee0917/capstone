@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 import "./Analysis.css";
 
@@ -8,7 +9,9 @@ function Analysis({ logout }) {
   const [selectedPet1, setSelectedPet1] = useState("");
   const [selectedPet2, setSelectedPet2] = useState("");
   const [analysis, setAnalysis] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1);
   const [selectedBehavior, setSelectedBehavior] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     fetchPets();
   }, []);
@@ -878,12 +881,24 @@ const getBehaviorInfo = (behavior) => {
 
     return (
     <div className="container">
-
       <h2>🐾 반려동물 관계 분석</h2>
 
-      <div className="card">
+      <div className="analysis-progress">
+        <div className={currentStep >= 1 ? "progress-step active" : "progress-step"}>
+          1
+        </div>
+        <div className={currentStep >= 2 ? "progress-line active" : "progress-line"} />
+        <div className={currentStep >= 2 ? "progress-step active" : "progress-step"}>
+          2
+        </div>
+        <div className={currentStep >= 3 ? "progress-line active" : "progress-line"} />
+        <div className={currentStep >= 3 ? "progress-step active" : "progress-step"}>
+          3
+        </div>
+      </div>
 
-        <div className="analysis-step-box">
+      {currentStep === 1 && (
+        <div className="analysis-step-screen">
           <div className="step-header">
             <span className="step-badge">STEP 1</span>
             <h3>반려동물 선택</h3>
@@ -892,96 +907,115 @@ const getBehaviorInfo = (behavior) => {
           <p className="step-desc">
             관계를 분석할 두 반려동물을 선택해주세요.
           </p>
-          
-           <div className="pet-select-area">
-          <div className="pet-select-column">
-            <h4>첫 번째 반려동물</h4>
 
-            <div className="pet-choice-list">
-              {pets.map((pet) => (
-                <button
-                  key={pet._id}
-                  type="button"
-                  disabled={selectedPet2 === pet._id}
-                  className={
-                    selectedPet2 === pet._id
-                      ? "pet-choice-card disabled"
-                      : selectedPet1 === pet._id
-                      ? "pet-choice-card selected"
-                      : "pet-choice-card"
-                  }
-                  onClick={() => {
-                    setSelectedPet1(pet._id);
+          <div className="pet-select-area">
+            <div className="pet-select-column">
+              <h4>첫 번째 반려동물</h4>
 
-                    if (selectedPet2 === pet._id) {
-                      setSelectedPet2("");
+              <div className="pet-choice-list">
+                {pets.map((pet) => (
+                  <button
+                    key={pet._id}
+                    type="button"
+                    disabled={selectedPet2 === pet._id}
+                    className={
+                      selectedPet2 === pet._id
+                        ? "pet-choice-card disabled"
+                        : selectedPet1 === pet._id
+                        ? "pet-choice-card selected"
+                        : "pet-choice-card"
                     }
-                  }}
-                >
-                  <div className="pet-choice-icon">
-                    {pet.image ? (
-                      <img
-                        src={`http://localhost:5000${pet.image}`}
-                        alt={pet.name}
-                        className="pet-choice-img"
-                      />
-                    ) : (
-                      <span>🐾</span>
-                    )}
-                  </div>
-                  <div>
-                    <strong>{pet.name}</strong>
-                    <span>{pet.type}</span>
-                  </div>
-                </button>
-              ))}
+                    onClick={() => {
+                      setSelectedPet1(pet._id);
+
+                      if (selectedPet2 === pet._id) {
+                        setSelectedPet2("");
+                      }
+                    }}
+                  >
+                    <div className="pet-choice-icon">
+                      {pet.image ? (
+                        <img
+                          src={`http://localhost:5000${pet.image}`}
+                          alt={pet.name}
+                          className="pet-choice-img"
+                        />
+                      ) : (
+                        <span>🐾</span>
+                      )}
+                    </div>
+
+                    <div>
+                      <strong>{pet.name}</strong>
+                      <span>{pet.type}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pet-vs-badge">↔</div>
+
+            <div className="pet-select-column">
+              <h4>두 번째 반려동물</h4>
+
+              <div className="pet-choice-list">
+                {pets.map((pet) => (
+                  <button
+                    key={pet._id}
+                    type="button"
+                    disabled={selectedPet1 === pet._id}
+                    className={
+                      selectedPet1 === pet._id
+                        ? "pet-choice-card disabled"
+                        : selectedPet2 === pet._id
+                        ? "pet-choice-card selected"
+                        : "pet-choice-card"
+                    }
+                    onClick={() => setSelectedPet2(pet._id)}
+                  >
+                    <div className="pet-choice-icon">
+                      {pet.image ? (
+                        <img
+                          src={`http://localhost:5000${pet.image}`}
+                          alt={pet.name}
+                          className="pet-choice-img"
+                        />
+                      ) : (
+                        <span>🐾</span>
+                      )}
+                    </div>
+
+                    <div>
+                      <strong>{pet.name}</strong>
+                      <span>{pet.type}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="pet-vs-badge">↔</div>
+          <div className="step-button-row">
+            <button
+              className="analysis-next-btn"
+              onClick={() => {
+                if (!selectedPet1 || !selectedPet2) {
+                  alert("두 반려동물을 모두 선택해주세요.");
+                  return;
+                }
 
-          <div className="pet-select-column">
-            <h4>두 번째 반려동물</h4>
-
-            <div className="pet-choice-list">
-              {pets.map((pet) => (
-                <button
-                  key={pet._id}
-                  type="button"
-                  disabled={selectedPet1 === pet._id}
-                  className={
-                    selectedPet1 === pet._id
-                      ? "pet-choice-card disabled"
-                      : selectedPet2 === pet._id
-                      ? "pet-choice-card selected"
-                      : "pet-choice-card"
-                  }
-                  onClick={() => setSelectedPet2(pet._id)}
-                >
-                  <div className="pet-choice-icon">
-                    {pet.image ? (
-                      <img
-                        src={`http://localhost:5000${pet.image}`}
-                        alt={pet.name}
-                        className="pet-choice-img"
-                      />
-                    ) : (
-                      <span>🐾</span>
-                    )}
-                  </div>
-                  <div>
-                    <strong>{pet.name}</strong>
-                    <span>{pet.type}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+                setCurrentStep(2);
+              }}
+            >
+              다음 단계로 →
+            </button>
           </div>
         </div>
+      )}
 
-        </div>
-
-        <div className="analysis-step-box">
+      {currentStep === 2 && (
+        <div className="analysis-step-screen">
           <div className="step-header">
             <span className="step-badge">STEP 2</span>
             <h3>현재 행동 선택</h3>
@@ -1015,74 +1049,107 @@ const getBehaviorInfo = (behavior) => {
               </div>
             ))}
           </div>
-        </div>
 
-        <div className="selected-preview-card">
-          <h4>📌 현재 선택 상태</h4>
-
-          <p>
-            <strong>반려동물:</strong>{" "}
-            {pets.find((p) => p._id === selectedPet1)?.name || "첫 번째 반려동물"} ↔{" "}
-            {pets.find((p) => p._id === selectedPet2)?.name || "두 번째 반려동물"}
-          </p>
-
-          <p>
-            <strong>관찰 행동:</strong>{" "}
-            {selectedBehavior || "아직 행동을 선택하지 않았습니다."}
-          </p>
-        </div>
-
-        <div className="analysis-step-box">
-          <div className="step-header">
-            <span className="step-badge">STEP 3</span>
-            <h3>관계 분석 시작</h3>
-          </div>
-
-          <button className="analysis-main-btn" onClick={runAnalysis}>
-            🔍 관계 분석 시작하기
-          </button>
-        </div>
-
-        <br /><br />
-
-      </div>
-
-      {analysis && (
-
-        <div className="card result-box">
-
-          <h3>{analysis.result}</h3>
-          {analysis.behavior && (
-            <p className="selected-behavior">
-              <strong>선택 행동:</strong> {analysis.behavior}
+          <div className="selected-preview-card">
+            <h4>📌 현재 선택 상태</h4>
+            <p>
+              <strong>반려동물:</strong>{" "}
+              {pets.find((p) => p._id === selectedPet1)?.name} ↔{" "}
+              {pets.find((p) => p._id === selectedPet2)?.name}
             </p>
-          )}
-
-          <p style={{ whiteSpace: "pre-line" }}>
-            {analysis.detail}
-          </p>
-
-          <div className="solution-box">
-
-            <h4>추천 솔루션 체크리스트</h4>
-
-            {analysis.recommendation.map((item, index) => (
-              <label key={index} className="solution-item">
-                <input type="checkbox" />
-                <span>{item}</span>
-              </label>
-            ))}
-
+            <p>
+              <strong>관찰 행동:</strong>{" "}
+              {selectedBehavior || "아직 행동을 선택하지 않았습니다."}
+            </p>
           </div>
 
-          <p>
-            <strong>관계 점수:</strong> {analysis.score}점
-          </p>
+          <div className="step-button-row">
+            <button
+              className="analysis-prev-btn"
+              onClick={() => setCurrentStep(1)}
+            >
+              ← 이전
+            </button>
 
+            <button
+              className="analysis-next-btn"
+              onClick={async () => {
+                if (!selectedBehavior) {
+                  alert("현재 행동을 선택해주세요.");
+                  return;
+                }
+
+                setCurrentStep(3);
+                await runAnalysis();
+              }}
+            >
+              분석 시작하기 →
+            </button>
+          </div>
         </div>
-
       )}
 
+      {currentStep === 3 && (
+        <div className="analysis-step-screen">
+          <div className="step-header">
+            <span className="step-badge">STEP 3</span>
+            <h3>관계 분석 결과</h3>
+          </div>
+
+          {!analysis ? (
+            <p className="step-desc">분석 중입니다...</p>
+          ) : (
+            <div className="card result-box">
+              <h3>{analysis.result}</h3>
+
+              {analysis.behavior && (
+                <p className="selected-behavior">
+                  <strong>선택 행동:</strong> {analysis.behavior}
+                </p>
+              )}
+
+              <p style={{ whiteSpace: "pre-line" }}>{analysis.detail}</p>
+
+              <div className="solution-box">
+                <h4>추천 솔루션 체크리스트</h4>
+
+                {analysis.recommendation.map((item, index) => (
+                  <label key={index} className="solution-item">
+                    <input type="checkbox" />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
+
+              <p>
+                <strong>관계 상태 지표:</strong> {analysis.score}점
+              </p>
+
+              <div className="step-button-row">
+                <button
+                  className="analysis-prev-btn"
+                  onClick={() => navigate("/records")}
+                >
+                  ← 분석 기록 보러가기
+                </button>
+
+                <button
+                  className="analysis-next-btn"
+                  onClick={() => {
+                    setSelectedPet1("");
+                    setSelectedPet2("");
+                    setSelectedBehavior("");
+                    setAnalysis(null);
+                    setCurrentStep(1);
+                  }}
+                >
+                  새 분석하기
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

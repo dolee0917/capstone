@@ -129,45 +129,125 @@ function PetDetail() {
 
   return (
     <div className="pet-detail-page">
-      <div className="pet-detail-card">
-        <button className="back-btn" onClick={() => navigate("/pets")}>
-          ← 목록으로
-        </button>
+      <div className="pet-profile-hero-card">
+      <button className="back-btn" onClick={() => navigate("/pets")}>
+        ← 목록으로
+      </button>
 
-        <h2>{pet.name} 프로필</h2>
+      <div className="pet-profile-hero">
+        <div className="pet-profile-text">
+          <span className="pet-profile-badge">Pet Profile</span>
 
-        <div className="pet-detail-image-wrap">
-            {pet.image ? (
-                <img
-                src={`http://localhost:5000${pet.image}`}
-                alt={pet.name}
-                className="pet-detail-image"
-                />
-            ) : (
-                <div className="pet-detail-default-icon">
-                {getDefaultIcon(pet.type)}
-                </div>
-            )}
-            </div>
+          <h2>
+            {pet.name}
+            <span className="gender-badge">
+              {pet.gender || "성별 미입력"}
+            </span>
+          </h2>
 
-        <div className="pet-detail-info">
-          <p><strong>종류</strong> {pet.type || "-"}</p>
-          <p><strong>품종</strong> {pet.breed || "-"}</p>
-          <p><strong>성별</strong> {pet.gender || "-"}</p>
-          <p><strong>중성화</strong> {pet.neutered || "-"}</p>
-          <p><strong>나이</strong> {pet.age ? `${pet.age}살` : "-"}</p>
-          <p><strong>몸무게</strong> {pet.weight ? `${pet.weight}kg` : "-"}</p>
-          <p><strong>성격</strong> {pet.personality || "-"}</p>
-          <p><strong>특징</strong> {pet.feature || "-"}</p>
+          <p className="pet-profile-subtitle">
+            {pet.personality
+              ? `${pet.personality} 성격을 가진 ${pet.name}예요 💜`
+              : `${pet.name}의 프로필을 확인해보세요 💜`}
+          </p>
         </div>
 
-        <button
-          className="edit-btn"
-          onClick={() => navigate(`/pets/edit/${pet._id}`)}
-        >
-          수정하기
-        </button>
+        <div className="pet-profile-image-area">
+          <div className="pet-profile-decoration">👑</div>
+
+          {pet.image ? (
+            <img
+              src={`http://localhost:5000${pet.image}`}
+              alt={pet.name}
+              className="pet-profile-main-image"
+            />
+          ) : (
+            <div className="pet-profile-main-default">
+              {getDefaultIcon(pet.type)}
+            </div>
+          )}
+        </div>
       </div>
+
+      <div className="pet-summary-row">
+        <div className="pet-summary-item">
+          <span>🎂</span>
+          <strong>{pet.age ? `${pet.age}살` : "-"}</strong>
+          <p>나이</p>
+        </div>
+
+        <div className="pet-summary-item">
+          <span>⚖️</span>
+          <strong>{pet.weight ? `${pet.weight}kg` : "-"}</strong>
+          <p>몸무게</p>
+        </div>
+
+        <div className="pet-summary-item">
+          <span>🛡️</span>
+          <strong>{pet.personality || "-"}</strong>
+          <p>성격</p>
+        </div>
+
+        <div className="pet-summary-item">
+          <span>⚧</span>
+          <strong>{pet.gender || "-"}</strong>
+          <p>성별</p>
+        </div>
+      </div>
+
+      <div className="pet-info-section">
+        <h3>🐾 기본 정보</h3>
+
+        <div className="pet-info-modern-list">
+          <div>
+            <span>🐰 종류</span>
+            <strong>{pet.type || "-"}</strong>
+          </div>
+
+          <div>
+            <span>🏅 품종</span>
+            <strong>{pet.breed || "-"}</strong>
+          </div>
+
+          <div>
+            <span>⚧ 성별</span>
+            <strong>{pet.gender || "-"}</strong>
+          </div>
+
+          <div>
+            <span>🎂 나이</span>
+            <strong>{pet.age ? `${pet.age}살` : "-"}</strong>
+          </div>
+
+          <div>
+            <span>⚖️ 몸무게</span>
+            <strong>{pet.weight ? `${pet.weight}kg` : "-"}</strong>
+          </div>
+
+          <div>
+            <span>💜 성격</span>
+            <strong>{pet.personality || "-"}</strong>
+          </div>
+
+          <div>
+            <span>🛡️ 중성화 여부</span>
+            <strong>{pet.neutered || "-"}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div className="pet-memo-box">
+        <h4>💬 보호자 메모</h4>
+        <p>{pet.feature || "아직 입력된 특징이 없습니다."}</p>
+      </div>
+
+      <button
+        className="pet-profile-edit-btn"
+        onClick={() => navigate(`/pets/edit/${pet._id}`)}
+      >
+        ✏️ 수정하기
+      </button>
+    </div>
 
       <div className="pet-detail-card">
         <h3>최근 화합/갈등 분석</h3>
