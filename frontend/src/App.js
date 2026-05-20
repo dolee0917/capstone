@@ -12,6 +12,7 @@ import RecentRecords from "./pages/RecentRecords";
 import { FaDog, FaCat, FaCrow, FaFish, FaPaw } from "react-icons/fa";
 import { GiRabbit, GiTurtle } from "react-icons/gi";
 import PetDetail from "./pages/PetDetail";
+import AnalysisDetail from "./pages/AnalysisDetail";
 
 import "./App.css";
 
@@ -373,6 +374,12 @@ function App() {
                 <PetDetail />
               </>
             </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/analysis-detail"
+          element={<AnalysisDetail />
           }
         />
 

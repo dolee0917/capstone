@@ -1,0 +1,86 @@
+.detail-page {
+
+  min-height: 100vh;
+  background: #f7f8fc;
+  padding: 40px 20px;
+
+}
+
+.detail-container {
+
+  max-width: 850px;
+  margin: 0 auto;
+
+}
+
+.back-btn {
+
+  border: none;
+  background: #e9eefc;
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: bold;
+
+}
+
+.detail-card {
+
+  background: white;
+  border-radius: 24px;
+  padding: 35px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+
+}
+
+.detail-card h3 {
+
+  font-size: 28px;
+  margin-bottom: 20px;
+
+}
+
+.detail-behavior {
+
+  margin-bottom: 30px;
+  font-size: 17px;
+
+}
+
+.detail-description {
+
+  background: #f8f9ff;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 30px;
+  line-height: 1.8;
+
+}
+
+.detail-description h4 {
+
+  margin-bottom: 15px;
+
+}
+
+.detail-solution-box {
+
+  background: #f6fff5;
+  border-radius: 18px;
+  padding: 24px;
+
+}
+
+.detail-solution-box h4 {
+
+  margin-bottom: 15px;
+
+}
+
+.detail-solution-item {
+
+  margin-bottom: 12px;
+  font-size: 16px;
+
+}

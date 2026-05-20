@@ -23,12 +23,6 @@ const analysisSchema = new mongoose.Schema(
       required: true,
     },
 
-    // 점수
-    score: {
-      type: Number,
-      default: 0,
-    },
-
     // 간단 요약
     summary: {
       type: String,
