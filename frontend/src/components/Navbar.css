@@ -24,7 +24,7 @@
 }
 
 .nav-right button {
-  background-color: #ff4d4d;
+  background-color: #397136;
   border: none;
   padding: 6px 12px;
   color: white;
@@ -33,7 +33,7 @@
 }
 
 .nav-right button:hover {
-  background-color: #e60000;
+  background-color: #e7d1d1;
 }
 
 .navbar span {
@@ -48,4 +48,30 @@
   font-weight: 800;
   border-bottom: 3px solid #6cab5b;
   padding-bottom: 4px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-icon-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #eef2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  color: #6cab5b;
+  transition: 0.2s;
+}
+
+.profile-icon-btn:hover {
+  transform: translateY(-2px);
+  background: #dff2da;
 }

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Navbar.css";
+import { FaUserCircle } from "react-icons/fa";
 
 function Navbar({ logout }) {
   const navigate = useNavigate();
@@ -29,12 +30,6 @@ function Navbar({ logout }) {
           ⚠️ 분석
         </span>
 
-        <span
-          className={location.pathname === "/mypage" ? "active" : ""}
-          onClick={() => navigate("/mypage")}
-        >
-         👤 마이페이지
-        </span>
 
         <span
           className={location.pathname === "/records" ? "active" : ""}
@@ -45,7 +40,18 @@ function Navbar({ logout }) {
       </div>
 
       <div className="nav-right">
-        <button onClick={logout}>로그아웃</button>
+        <div className="navbar-right">
+          <button
+            className="profile-icon-btn"
+            onClick={() => navigate("/mypage")}
+          >
+            <FaUserCircle />
+          </button>
+
+          <button className="logout-btn" onClick={logout}>
+            로그아웃
+          </button>
+        </div>
       </div>
     </div>
   );
