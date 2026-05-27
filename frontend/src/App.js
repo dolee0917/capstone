@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import RecentRecords from "./pages/RecentRecords";
 import PetDetail from "./pages/PetDetail";
 import AnalysisDetail from "./pages/AnalysisDetail";
+import About from "./pages/About";
 
 import "./App.css";
 
@@ -483,6 +484,18 @@ function App() {
             <PrivateRoute>
               <Home logout={logout} />
             </PrivateRoute>
+          }
+        />
+
+        <Route
+         path="/about"
+         element={
+           <PrivateRoute>
+             <>
+               <Navbar logout={logout} />
+               <About />
+             </>
+           </PrivateRoute>
           }
         />
 

@@ -17,9 +17,17 @@ function Navbar({ logout }) {
         </span>
 
         <span
+          className={location.pathname === "/about" ? "active" : ""}
+         onClick={() => navigate("/about")}
+        >
+          📖 서비스 소개
+        </span>
+
+        <span
           className={location.pathname === "/pets" ? "active" : ""}
           onClick={() => navigate("/pets")}
         >
+          
           🐾 반려동물
         </span>
 
