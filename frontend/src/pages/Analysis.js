@@ -10,6 +10,7 @@ function Analysis() {
   const [selectedPet2, setSelectedPet2] = useState("");
   const [analysis, setAnalysis] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [customBehavior, setCustomBehavior] = useState("");
   const [selectedBehavior, setSelectedBehavior] = useState("");
 
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ function Analysis() {
   useEffect(() => {
     fetchPets();
   }, []);
+
+  
 
   const fetchPets = async () => {
 
@@ -129,6 +132,92 @@ function Analysis() {
       trend: "stress",
     };
   };
+
+  const keywordSolutionMap = [
+  {
+    keywords: ["밥", "식사", "먹이", "간식", "밥그릇"],
+    result: "🟡 먹이 자원 경쟁으로 인한 갈등 가능성",
+    detail: `
+반려동물들이 밥, 간식, 밥그릇 근처에서 예민하게 반응한다면
+먹이 자원에 대한 경쟁심이 원인일 수 있습니다.
+
+식사 공간이 가깝거나 보호자의 관심이 한쪽에 집중되면
+갈등이 반복될 가능성이 있습니다.
+    `,
+    recommendation: [
+      "식사 공간 분리하기",
+      "간식은 따로 주기",
+      "밥그릇 주변에서 접촉 막기",
+      "식사 후 그릇 바로 치우기",
+    ],
+  },
+  {
+    keywords: ["화장실", "배변", "모래", "패드"],
+    result: "🟡 화장실 공간 스트레스 가능성",
+    detail: `
+화장실이나 배변 공간 근처에서 경계가 생긴다면
+공간 점유 스트레스가 원인일 수 있습니다.
+
+특히 고양이는 화장실 위치와 냄새에 민감하게 반응합니다.
+    `,
+    recommendation: [
+      "화장실을 각각 따로 마련하기",
+      "화장실 위치를 떨어뜨리기",
+      "배변 공간 주변 접근 막기",
+      "냄새가 남지 않도록 자주 청소하기",
+    ],
+  },
+  {
+    keywords: ["장난감", "공", "인형", "놀이"],
+    result: "🟡 장난감 독점으로 인한 갈등 가능성",
+    detail: `
+장난감이나 놀이 도구를 두고 갈등이 생긴다면
+자원 독점 행동일 수 있습니다.
+
+한 마리가 장난감을 차지하려 하거나
+다른 반려동물이 접근할 때 위협 행동을 보일 수 있습니다.
+    `,
+    recommendation: [
+      "장난감을 여러 개 준비하기",
+      "각자 따로 놀아주는 시간 만들기",
+      "흥분이 커지기 전에 놀이 중단하기",
+      "장난감 보관 위치 분리하기",
+    ],
+  },
+  {
+    keywords: ["숨", "피해", "도망", "회피", "구석"],
+    result: "🟠 회피 행동으로 인한 스트레스 가능성",
+    detail: `
+한 반려동물이 계속 숨거나 도망간다면
+상대 반려동물에게 부담을 느끼고 있을 수 있습니다.
+
+억지로 만나게 하기보다 안전한 공간을 먼저 보장해야 합니다.
+    `,
+    recommendation: [
+      "숨을 수 있는 공간 마련하기",
+      "억지로 가까이 두지 않기",
+      "짧은 시간만 함께 있게 하기",
+      "도망갈 수 있는 동선 확보하기",
+    ],
+  },
+  {
+    keywords: ["으르렁", "하악질", "공격", "물", "싸움", "위협"],
+    result: "🔴 직접적인 갈등 행동 발생",
+    detail: `
+으르렁거림, 하악질, 물기, 공격 시도는
+명확한 갈등 신호입니다.
+
+이 경우 보호자가 손으로 직접 말리기보다
+즉시 공간을 분리하는 것이 안전합니다.
+    `,
+    recommendation: [
+      "즉시 공간 분리하기",
+      "손으로 직접 싸움 말리지 않기",
+      "시야 차단 후 진정 시간 주기",
+      "반복될 경우 전문가 상담 고려하기",
+    ],
+  },
+];
 
   // 관계 분석
   const analyzePets = (p1, p2) => {
@@ -249,11 +338,13 @@ function Analysis() {
     const p1 = pets.find((p) => p._id === selectedPet1);
     const p2 = pets.find((p) => p._id === selectedPet2);
 
-    const result = analyzePets(p1, p2);
+    const keywordResult = findKeywordSolution(customBehavior || selectedBehavior);
 
-    const behaviorInfo = getBehaviorInfo(selectedBehavior);
+    const result = keywordResult || analyzePets(p1, p2);
+    const finalBehavior = customBehavior || selectedBehavior;
+    const behaviorInfo = getBehaviorInfo(finalBehavior);
 
-    result.behavior = selectedBehavior;
+    result.behavior = finalBehavior;
     result.behaviorCategory = behaviorInfo.category;
     result.relationshipTrend = behaviorInfo.trend;
 
@@ -275,7 +366,7 @@ function Analysis() {
 
       recommendation: result.recommendation.join(", "),
 
-      behavior: selectedBehavior,
+      behavior: finalBehavior,
 
       behaviorCategory: behaviorInfo.category,
 
@@ -315,6 +406,14 @@ function Analysis() {
 
     console.log("분석 저장 완료:", data);
   };
+
+  const findKeywordSolution = (text) => {
+  if (!text.trim()) return null;
+
+  return keywordSolutionMap.find((item) =>
+    item.keywords.some((keyword) => text.includes(keyword))
+  );
+};
 
   return (
 
@@ -524,6 +623,8 @@ function Analysis() {
                       {item}
                     </button>
 
+                    
+
                   ))}
 
                 </div>
@@ -532,6 +633,20 @@ function Analysis() {
 
             ))}
 
+          </div>
+
+          <div className="custom-behavior-box">
+            <h4>✍️ 기타 / 직접 작성</h4>
+
+            <textarea
+              className="custom-behavior-input"
+              placeholder="예: 밥 먹을 때 으르렁거려요, 화장실 근처에서 싸워요"
+              value={customBehavior}
+              onChange={(e) => {
+                setCustomBehavior(e.target.value);
+                setSelectedBehavior(e.target.value);
+              }}
+            />
           </div>
 
           <div className="step-button-row">
