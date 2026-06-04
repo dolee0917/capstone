@@ -120,6 +120,24 @@ function RecentRecords() {
     "#FFD93D",
   ];
 
+  const chartLegend = [
+  {
+    name: "화합",
+    color: "#7ED957",
+    description: "긍정적인 관계 행동",
+  },
+  {
+    name: "갈등",
+    color: "#FF6B6B",
+    description: "공격·경계 행동",
+  },
+  {
+    name: "스트레스",
+    color: "#FFD93D",
+    description: "회피·불안 행동",
+  },
+];
+
   return (
 
     <div className="records-page">
@@ -216,6 +234,33 @@ function RecentRecords() {
               </PieChart>
 
             </ResponsiveContainer>
+
+            <div className="chart-legend">
+
+              {chartLegend.map((item) => (
+
+                <div
+                  key={item.name}
+                  className="legend-item"
+                >
+
+                  <span
+                    className="legend-color"
+                    style={{
+                      backgroundColor: item.color,
+                    }}
+                  />
+
+                  <div>
+                    <strong>{item.name}</strong>
+                    <p>{item.description}</p>
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
 
           </div>
 

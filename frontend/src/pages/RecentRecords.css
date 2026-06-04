@@ -241,3 +241,39 @@
   font-weight: 700;
   color: #333;
 }
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fb;
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-item strong {
+  display: block;
+  font-size: 14px;
+  color: #222;
+}
+
+.legend-item p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #777;
+}
