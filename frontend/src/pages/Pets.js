@@ -58,20 +58,9 @@ function Pets() {
     setPets(Array.isArray(data) ? data : []);
   };
 
-  const fetchAnalysis = async () => {
-  const res = await fetch("http://localhost:5000/analysis", {
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
-  });
-
-  const data = await res.json();
-  setAnalysisList(Array.isArray(data) ? data : []);
-};
 
   useEffect(() => {
-    fetchPets();
-    fetchAnalysis();
+    fetchPets();  
 
   }, []);
 
