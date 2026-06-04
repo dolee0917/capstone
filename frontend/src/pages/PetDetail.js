@@ -8,14 +8,12 @@ import "./PetDetail.css";
 function PetDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [completedMissions, setCompletedMissions] = useState({});
   const [pet, setPet] = useState(null);
   const [analysisList, setAnalysisList] = useState([]);
 
   useEffect(() => {
     fetchPet();
-    fetchAnalysis();
-  }, [id]);
+  }, []);
 
   const getDefaultIcon = (type) => {
     const style = {

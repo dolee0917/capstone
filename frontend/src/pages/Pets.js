@@ -9,16 +9,6 @@ import { GiRabbit, GiTurtle, GiGecko } from "react-icons/gi";
 function Pets() {
   const navigate = useNavigate();
   const [pets, setPets] = useState([]);
-  const [analysisList, setAnalysisList] = useState([]);
-  const formatDateTime = (dateTime) => {
-    return new Date(dateTime).toLocaleString("ko-KR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
   const getDefaultIcon = (type) => {
     const style = {
       fontSize: "72px",
@@ -85,24 +75,6 @@ function Pets() {
 
   }, []);
 
-
-  const deletePet = async (id) => {
-    const isConfirmed = window.confirm("정말 삭제하시겠습니까?");
-
-    if (!isConfirmed) {
-      return;
-    }
-
-    await fetch(`http://localhost:5000/pets/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    });
-
-    alert("삭제되었습니다.");
-    fetchPets();
-  };
 
   return (
     <div className="pets-page">
