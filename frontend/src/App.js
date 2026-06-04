@@ -33,7 +33,7 @@ function Home({ logout }) {
     try {
 
       const res = await fetch(
-        "http://localhost:5000/pets",
+        "https://capstone-swkb.onrender.com",
         {
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -60,7 +60,7 @@ function Home({ logout }) {
     try {
 
       const res = await fetch(
-        "http://localhost:5000/analysis",
+        "https://capstone-swkb.onrender.com/analysis",
         {
           headers: {
             Authorization: localStorage.getItem("token"),
@@ -88,7 +88,7 @@ function Home({ logout }) {
 
       return (
         <img
-          src={`http://localhost:5000${pet.image}`}
+          src={`https://capstone-swkb.onrender.com${pet.image}`}
           alt={pet.name}
           className="home-pet-avatar-img"
         />

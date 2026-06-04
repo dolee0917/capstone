@@ -14,7 +14,7 @@ function MyPage() {
   }, []);
 
   const fetchProfile = async () => {
-    const res = await fetch("http://localhost:5000/profile", {
+    const res = await fetch("https://capstone-swkb.onrender.com/profile", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -28,7 +28,7 @@ function MyPage() {
   };
 
   const fetchPets = async () => {
-    const res = await fetch("http://localhost:5000/pets", {
+    const res = await fetch("https://capstone-swkb.onrender.com/pets", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },

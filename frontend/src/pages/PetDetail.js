@@ -33,7 +33,7 @@ function PetDetail() {
     };
 
   const fetchPet = async () => {
-    const res = await fetch(`http://localhost:5000/pets/${id}`, {
+    const res = await fetch(`https://capstone-swkb.onrender.com/pets/${id}`, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -50,7 +50,7 @@ function PetDetail() {
   };
 
   const fetchAnalysis = async () => {
-    const res = await fetch("http://localhost:5000/analysis", {
+    const res = await fetch("https://capstone-swkb.onrender.com/analysis", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -61,7 +61,7 @@ function PetDetail() {
   };
 
   const updateAnalysisSolutions = async (analysisId, updatedSolutions) => {
-  await fetch(`http://localhost:5000/analysis/${analysisId}/solutions`, {
+  await fetch(`https://capstone-swkb.onrender.com/analysis/${analysisId}/solutions`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -155,7 +155,7 @@ function PetDetail() {
 
           {pet.image ? (
             <img
-              src={`http://localhost:5000${pet.image}`}
+              src={`https://capstone-swkb.onrender.com${pet.image}`}
               alt={pet.name}
               className="pet-profile-main-image"
             />
@@ -292,7 +292,7 @@ function PetDetail() {
                       }
                       onClick={async () => {
                         const res = await fetch(
-                          `http://localhost:5000/analysis/${item._id}/today-mission`,
+                          `https://capstone-swkb.onrender.com/analysis/${item._id}/today-mission`,
                           {
                             method: "PUT",
                             headers: {

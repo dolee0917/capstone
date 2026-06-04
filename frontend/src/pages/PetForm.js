@@ -103,7 +103,7 @@ function PetForm() {
   }, [id]);
 
   const fetchPet = async () => {
-  const res = await fetch(`http://localhost:5000/pets/${id}`, {
+  const res = await fetch(`https://capstone-swkb.onrender.com/pets/${id}`, {
     headers: {
       Authorization: localStorage.getItem("token"),
     },
@@ -131,7 +131,7 @@ function PetForm() {
   });
 
   if (pet.image) {
-    setPreview(`http://localhost:5000${pet.image}`);
+    setPreview(`https://capstone-swkb.onrender.com${pet.image}`);
   }
 };
 
@@ -174,8 +174,8 @@ function PetForm() {
     }
 
     const url = isEditMode
-      ? `http://localhost:5000/pets/${id}`
-      : "http://localhost:5000/pets";
+      ? `https://capstone-swkb.onrender.com/pets/${id}`
+      : "https://capstone-swkb.onrender.com/pets";
 
     const method = isEditMode ? "PUT" : "POST";
 

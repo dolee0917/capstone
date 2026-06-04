@@ -25,7 +25,7 @@ function Analysis() {
 
     try {
 
-      const res = await fetch("http://localhost:5000/pets", {
+      const res = await fetch("https://capstone-swkb.onrender.com/pets", {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
@@ -644,7 +644,7 @@ function Analysis() {
     };
 
     const res = await fetch(
-      "http://localhost:5000/analysis",
+      "https://capstone-swkb.onrender.com/analysis",
       {
         method: "POST",
 

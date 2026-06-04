@@ -19,7 +19,7 @@ function Profile() {
   }, []);
 
   const fetchProfile = async () => {
-    const res = await fetch("http://localhost:5000/profile", {
+    const res = await fetch("https://capstone-swkb.onrender.com/profile", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -49,7 +49,7 @@ function Profile() {
   };
 
   const updateProfile = async () => {
-    const res = await fetch("http://localhost:5000/profile", {
+    const res = await fetch("https://capstone-swkb.onrender.com/profile", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

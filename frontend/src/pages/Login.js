@@ -55,7 +55,7 @@ function Login({ setIsLoggedIn }) {
     const finalPurpose =
     form.purpose === "기타" ? form.otherPurpose : form.purpose;
 
-    const res = await fetch("http://localhost:5000/register", {
+    const res = await fetch("https://capstone-swkb.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ function Login({ setIsLoggedIn }) {
   };
 
   const login = async () => {
-    const res = await fetch("http://localhost:5000/login", {
+    const res = await fetch("https://capstone-swkb.onrender.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

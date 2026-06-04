@@ -23,7 +23,7 @@ function RecentRecords() {
   const fetchRecords = async () => {
 
     const res = await fetch(
-      "http://localhost:5000/analysis",
+      "https://capstone-swkb.onrender.com/analysis",
       {
         headers: {
           Authorization:
@@ -480,7 +480,7 @@ function RecentRecords() {
 
                                           await fetch(
 
-                                            `http://localhost:5000/analysis/${record._id}/solutions`,
+                                            `https://capstone-swkb.onrender.com/analysis/${record._id}/solutions`,
 
                                             {
                                               method: "PUT",

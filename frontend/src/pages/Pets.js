@@ -48,7 +48,7 @@ function Pets() {
 
   
   const fetchPets = async () => {
-    const res = await fetch("http://localhost:5000/pets", {
+    const res = await fetch("https://capstone-swkb.onrender.com/pets", {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
@@ -91,7 +91,7 @@ function Pets() {
             >
               {pet.image ? (
                 <img
-                  src={`http://localhost:5000${pet.image}`}
+                  src={`https://capstone-swkb.onrender.com${pet.image}`}
                   alt={pet.name}
                   className="pet-image"
                 />
