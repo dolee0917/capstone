@@ -190,14 +190,19 @@ function Home({ logout }) {
 
             </strong>
 
-            <p>
+             <p>
 
-              {latestRecord
-                ? `${latestRecord.petNames?.join(" ↔ ")} 최근 점수 ${latestRecord.score}점`
-                : "아직 분석 기록이 없습니다."}
+              {latestRecord ? (
+                <>
+                  최근 분석 결과를 확인해보세요.
+                  <br />
+                  {latestRecord.petNames?.join(" ↔ ")}
+                </>
+              ) : (
+                "아직 분석 기록이 없습니다."
+              )}
 
             </p>
-
           </div>
 
         </section>
