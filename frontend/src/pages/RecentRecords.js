@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RecentRecords.css";
 
 import {
@@ -10,6 +11,7 @@ import {
 } from "recharts";
 
 function RecentRecords() {
+  const navigate = useNavigate();
 
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
@@ -331,7 +333,7 @@ function RecentRecords() {
                 <div
                   className="record-main"
                   onClick={() =>
-                    setOpenId(openId === group.pairKey ? null : group.pairKey)
+                    navigate(`/relationship/${encodeURIComponent(group.pairKey)}`)
                   }
                 >
                   <div>

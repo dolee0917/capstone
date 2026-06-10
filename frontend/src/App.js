@@ -12,6 +12,7 @@ import RecentRecords from "./pages/RecentRecords";
 import PetDetail from "./pages/PetDetail";
 import AnalysisDetail from "./pages/AnalysisDetail";
 import About from "./pages/About";
+import RelationshipDetail from "./pages/RelationshipDetail";
 
 import "./App.css";
 
@@ -476,11 +477,7 @@ function App() {
 
       <Routes>
 
-        <Route
-          path="/"
-          element={
-            <Login setIsLoggedIn={setIsLoggedIn} />
-          }
+        <Route path="/" element={ <Login setIsLoggedIn={setIsLoggedIn} /> }
         />
 
         <Route
@@ -612,7 +609,12 @@ function App() {
           element={<Navigate to="/home" />}
         />
 
+        <Route path="/relationship/:pairKey" element={<RelationshipDetail />} />
+
+      
       </Routes>
+
+      
 
     </BrowserRouter>
   );
