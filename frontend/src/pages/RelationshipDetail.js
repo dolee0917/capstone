@@ -6,6 +6,7 @@ import "./RelationshipDetail.css";
 function RelationshipDetail() {
   const { pairKey } = useParams();
   const navigate = useNavigate();
+  const [memoInputs, setMemoInputs] = useState({});
 
   const [records, setRecords] = useState([]);
 
@@ -364,7 +365,14 @@ function RelationshipDetail() {
                       {stageSolutions[0].stageTitle || "솔루션 단계"}
                     </h4>
 
-                    {stageSolutions.map((solution) => (
+                    {stageSolutions.map((solution) => {
+                        const solutionIndex = latest.solutions.findIndex(
+                            (s) => s._id === solution._id || s.text === solution.text
+                        );
+
+                        const memoKey = `${latest._id}-${solutionIndex}`;
+
+                        return (
                       <div
                         key={solution._id || solution.text}
                         className="solution-mission-item"
@@ -420,8 +428,49 @@ function RelationshipDetail() {
                             </div>
                           </div>
                         )}
+
+                        <div className="solution-memo-box">
+                            <label>관찰 메모</label>
+
+                            <textarea
+                                placeholder="예: 처음에는 경계했지만 5분 뒤 같은 공간에 머물렀어요."
+                                value={
+                                memoInputs[memoKey] !== undefined
+                                    ? memoInputs[memoKey]
+                                    : solution.memo || ""
+                                }
+                                onChange={(e) =>
+                                setMemoInputs({
+                                    ...memoInputs,
+                                    [memoKey]: e.target.value,
+                                })
+                                }
+                            />
+
+                            <button
+                                className="memo-save-btn"
+                                onClick={() => {
+                                const updatedSolutions = latest.solutions.map((s, index) =>
+                                    index === solutionIndex
+                                    ? {
+                                        ...s,
+                                        memo:
+                                            memoInputs[memoKey] !== undefined
+                                            ? memoInputs[memoKey]
+                                            : solution.memo || "",
+                                        }
+                                    : s
+                                );
+
+                                updateAnalysisSolutions(latest._id, updatedSolutions);
+                                alert("메모가 저장되었습니다.");
+                                }}
+                            >
+                                메모 저장
+                            </button>
+                            </div>
                       </div>
-                    ))}
+                    );})}
                   </div>
                 );
               })

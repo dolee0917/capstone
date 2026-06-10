@@ -7,6 +7,7 @@ const createSolution = (text, stage, stageTitle, mission) => ({
   stage,
   stageTitle,
   checked: false,
+  memo: "",
   mission: {
     title: mission.title,
     description: mission.description,

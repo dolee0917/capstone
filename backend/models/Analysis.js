@@ -70,6 +70,11 @@ const analysisSchema = new mongoose.Schema(
     {
       text: String,
 
+      memo: {
+        type: String,
+        default: "",
+      },
+
       stage: {
         type: Number,
         default: 2,

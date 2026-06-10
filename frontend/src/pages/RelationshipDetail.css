@@ -308,3 +308,50 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.solution-memo-box {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f8f9fb;
+  border: 1px solid #e5e7eb;
+}
+
+.solution-memo-box label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 800;
+  color: #333;
+}
+
+.solution-memo-box textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  resize: vertical;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.solution-memo-box textarea:focus {
+  border-color: #6cab5b;
+  box-shadow: 0 0 0 3px rgba(108, 171, 91, 0.15);
+}
+
+.memo-save-btn {
+  margin-top: 10px;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #6cab5b;
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.memo-save-btn:hover {
+  opacity: 0.92;
+}
