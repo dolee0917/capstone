@@ -169,3 +169,142 @@
     align-items: flex-start;
   }
 }
+
+.harmony-journey-card {
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border: 1px solid #e5efd9;
+  box-shadow: 0 10px 28px rgba(108, 171, 91, 0.1);
+}
+
+.harmony-journey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+.harmony-journey-header h3 {
+  margin: 0;
+  font-size: 26px;
+  color: #1f2933;
+}
+
+.harmony-journey-header p {
+  margin: 8px 0 0;
+  color: #667085;
+}
+
+.harmony-journey-header strong {
+  font-size: 38px;
+  color: #6cab5b;
+}
+
+.journey-progress-bar {
+  width: 100%;
+  height: 16px;
+  background: #eef2f7;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 24px 0;
+}
+
+.journey-progress-fill {
+  height: 100%;
+  background: #6cab5b;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.journey-step-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.journey-step {
+  background: #f8f9fb;
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #edf0f3;
+}
+
+.journey-step span {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #d1d5db;
+  color: white;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.journey-step p {
+  margin: 0;
+  font-weight: 800;
+  color: #555;
+}
+
+.journey-step.active {
+  background: #fffaf2;
+  border-color: #f3d4a1;
+}
+
+.journey-step.active span {
+  background: #f0b84b;
+}
+
+.journey-step.done {
+  background: #eef8ec;
+  border-color: #cde8c6;
+}
+
+.journey-step.done span {
+  background: #6cab5b;
+}
+
+.journey-current-box {
+  padding: 20px;
+  border-radius: 18px;
+  background: #f7fbff;
+  border: 1px solid #cfe3ff;
+}
+
+.journey-current-box h4 {
+  margin: 0 0 12px;
+  color: #24527a;
+  font-size: 20px;
+}
+
+.journey-current-box p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.journey-current-box span {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: white;
+  color: #555;
+  font-weight: 800;
+}
+
+@media (max-width: 700px) {
+  .harmony-journey-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .journey-step-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

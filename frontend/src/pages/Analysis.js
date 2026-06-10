@@ -156,25 +156,25 @@ function Analysis() {
     };
 
     const getStressResult = (behavior) => {
-      return {
-        result: "🟡 스트레스 및 회피 행동 가능성",
-        detail: `
-    선택한 행동인 "${behavior}"은 반려동물이 상대 반려동물이나 환경에 부담을 느끼고 있을 가능성을 보여줍니다.
+    return {
+      result: "🟡 스트레스 및 회피 행동 가능성",
+      detail: `
+  선택한 행동인 "${behavior}"은 반려동물이 상대 반려동물이나 환경에 부담을 느끼고 있을 가능성을 보여줍니다.
 
-    숨기, 떨기, 반복 울음, 특정 공간 회피 같은 행동은
-    직접적인 공격은 아니더라도 긴장과 불안의 신호일 수 있습니다.
+  숨기, 떨기, 반복 울음, 특정 공간 회피 같은 행동은
+  직접적인 공격은 아니더라도 긴장과 불안의 신호일 수 있습니다.
 
-    억지로 가까이 두기보다는 각자의 공간을 확보하고
-    짧은 시간 동안 천천히 적응할 수 있도록 도와주는 것이 좋습니다.
-        `,
-        recommendation: [
-          "숨을 수 있는 공간 마련하기",
-          "억지로 가까이 두지 않기",
-          "짧은 시간만 함께 있게 하기",
-          "스트레스 행동이 반복되는지 관찰하기",
-        ],
-      };
+  억지로 가까이 두기보다는 각자의 공간을 확보하고
+  짧은 시간 동안 천천히 적응할 수 있도록 도와주는 것이 좋습니다.
+      `,
+      recommendation: [
+        "숨을 수 있는 공간 마련하기",
+        "억지로 가까이 두지 않기",
+        "짧은 시간만 함께 있게 하기",
+        "스트레스 행동이 반복되는지 관찰하기",
+      ],
     };
+  };
 
   const keywordSolutionMap = [
   {
@@ -847,32 +847,33 @@ function Analysis() {
 
               <h4>두 번째 반려동물</h4>
 
-              <div className="pet-choice-list">
+            <div className="pet-choice-list">
+              {pets.map((pet) => {
+                const isSameAsFirst = selectedPet1 === pet._id;
 
-                {pets.map((pet) => (
-
+                return (
                   <button
                     key={pet._id}
                     type="button"
+                    disabled={isSameAsFirst}
                     className={
                       selectedPet2 === pet._id
                         ? "pet-choice-card selected"
+                        : isSameAsFirst
+                        ? "pet-choice-card disabled"
                         : "pet-choice-card"
                     }
-                    onClick={() =>
-                      setSelectedPet2(pet._id)
-                    }
+                    onClick={() => {
+                      if (isSameAsFirst) return;
+                      setSelectedPet2(pet._id);
+                    }}
                   >
-
                     <strong>{pet.name}</strong>
-
                     <span>{pet.type}</span>
-
                   </button>
-
-                ))}
-
-              </div>
+                );
+              })}
+            </div>
 
             </div>
 

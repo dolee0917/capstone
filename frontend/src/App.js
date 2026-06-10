@@ -30,32 +30,28 @@ function Home({ logout }) {
   }, []);
 
   const fetchPets = async () => {
+  try {
+    const res = await fetch(
+      "https://capstone-swkb.onrender.com/pets",
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
 
-    try {
+    const data = await res.json();
 
-      const res = await fetch(
-        "https://capstone-swkb.onrender.com",
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      setPets(Array.isArray(data) ? data : []);
-
-    } catch (error) {
-
-      console.log(
-        "홈 반려동물 데이터 불러오기 실패:",
-        error
-      );
-
+    if (!res.ok) {
+      console.log("홈 반려동물 데이터 불러오기 실패:", data);
+      return;
     }
-  };
 
+    setPets(Array.isArray(data) ? data : []);
+  } catch (error) {
+    console.log("홈 반려동물 데이터 불러오기 실패:", error);
+  }
+};
   const fetchRecords = async () => {
 
     try {
@@ -104,6 +100,28 @@ function Home({ logout }) {
   };
 
   const latestRecord = records[0];
+
+  const getPairKey = (petNames = []) => {
+  return [...petNames].sort().join(" ↔ ");
+};
+
+const latestMissionsByPair = Object.values(
+  records.reduce((acc, record) => {
+    const pairKey = getPairKey(record.petNames);
+
+    const currentDate = new Date(record.dateTime || record.createdAt);
+    const savedDate = acc[pairKey]
+      ? new Date(acc[pairKey].dateTime || acc[pairKey].createdAt)
+      : null;
+
+    if (!acc[pairKey] || currentDate > savedDate) {
+      acc[pairKey] = record;
+    }
+
+    return acc;
+  }, {})
+);
+
 
   const harmonyCount = records.filter(
     (record) =>
@@ -172,10 +190,13 @@ function Home({ logout }) {
             </div>
 
           </div>
+          </section>
 
-          <div className="hero-status-card">
+          <section className="home-main-grid">
+            <div className="home-panel mission-panel">
+              
 
-            <span>
+            <span className="relationship-status-title">
               오늘의 관계 상태
             </span>
 
@@ -186,125 +207,46 @@ function Home({ logout }) {
                   ? "안정화 진행 중 🌿"
                   : latestRecord.score >= 40
                   ? "관찰 필요 ⚠️"
-                  : "주의 필요 🚨"
+                  : "안정화 진행 중 🌿"
                 : "분석 대기 중"}
 
             </strong>
 
-             <p>
+             {latestMissionsByPair.length > 0 ? (
+              <div className="home-mission-list">
+                {latestMissionsByPair.map((record) => (
+                  <div
+                    key={record._id}
+                    className="home-mission-card"
+                    onClick={() =>
+                      navigate(
+                        `/relationship/${encodeURIComponent(getPairKey(record.petNames))}`
+                      )
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
+                    <strong>
+                      {getPairKey(record.petNames)}
+                    </strong>
 
-              {latestRecord ? (
-                <>
-                  최근 분석 결과를 확인해보세요.
-                  <br />
-                  {latestRecord.petNames?.join(" ↔ ")}
-                </>
-              ) : (
-                "아직 분석 기록이 없습니다."
-              )}
+                    <p>
+                      {record.relationshipTrend === "harmony"
+                        ? "좋은 관계 행동을 반복해서 안정적인 관계로 이어가요."
+                        : record.relationshipTrend === "conflict"
+                        ? "갈등 행동을 줄이고 안전한 거리를 유지해요."
+                        : "짧은 시간 동안 서로의 반응을 관찰해보세요."}
+                    </p>
 
-            </p>
-          </div>
-
-        </section>
-
-        {/* KPI */}
-        <section className="home-kpi-grid">
-
-          <div className="home-kpi-card">
-
-            <span>
-              완료한 미션
-            </span>
-
-            <strong>
-              {completedMissionCount}개
-            </strong>
-
-          </div>
-
-          <div className="home-kpi-card">
-
-            <span>
-              화합 행동
-            </span>
-
-            <strong>
-              {harmonyCount}회
-            </strong>
-
-          </div>
-
-          <div className="home-kpi-card warning">
-
-            <span>
-              갈등 행동
-            </span>
-
-            <strong>
-              {conflictCount}회
-            </strong>
-
-          </div>
-
-        </section>
-
-        {/* 메인 */}
-        <section className="home-main-grid">
-
-          {/* 오늘의 미션 */}
-          <div className="home-panel mission-panel">
-
-            <div className="panel-header">
-
-              <h3>
-                🎯 오늘의 관계 미션
-              </h3>
-
-              <button
-                onClick={() =>
-                  navigate("/pets")
-                }
-              >
-                미션 보러가기
-              </button>
-
-            </div>
-
-            {latestRecord ? (
-
-              <div className="home-mission-card">
-
-                <strong>
-                  {latestRecord.petNames?.join(" ↔ ")}
-                </strong>
-
-                <p>
-
-                  {latestRecord.relationshipTrend === "harmony"
-                    ? "좋은 관계 행동을 반복해서 안정적인 관계로 이어가요."
-                    : latestRecord.relationshipTrend === "conflict"
-                    ? "갈등 행동을 줄이고 안전한 거리를 유지해요."
-                    : "짧은 시간 동안 서로의 반응을 관찰해보세요."}
-
-                </p>
-
-                <span>
-
-                  최근 행동:
-                  {" "}
-                  {latestRecord.behavior || "행동 기록 없음"}
-
-                </span>
-
+                    <span>
+                      최근 행동: {record.behavior || "행동 기록 없음"}
+                    </span>
+                  </div>
+                ))}
               </div>
-
             ) : (
-
               <p className="empty-text">
                 분석 후 오늘의 미션이 생성됩니다.
               </p>
-
             )}
 
           </div>
@@ -372,12 +314,12 @@ function Home({ logout }) {
         {/* 반려동물 */}
         <div className="home-pet-wrapper">
 
-          <section
-  className="home-panel"
-  style={{
-    maxWidth: "1180px",
-    margin: "28px auto 0"
-  }}
+                <section
+        className="home-panel"
+        style={{
+          maxWidth: "1180px",
+          margin: "28px auto 0"
+        }}
 >
 
             <div className="panel-header">
@@ -603,18 +545,22 @@ function App() {
             <AnalysisDetail />
           }
         />
+        
+        <Route
+          path="/relationship/:pairKey"
+          element={
+            <PrivateRoute>
+              <RelationshipDetail />
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="*"
           element={<Navigate to="/home" />}
         />
-
-        <Route path="/relationship/:pairKey" element={<RelationshipDetail />} />
-
       
       </Routes>
-
-      
 
     </BrowserRouter>
   );

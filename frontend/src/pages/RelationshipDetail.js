@@ -122,6 +122,68 @@ function RelationshipDetail() {
     };
   };
 
+  const getHarmonyJourney = (record) => {
+  const solutions = record.solutions || [];
+
+  const totalCount = solutions.length;
+
+  const completedCount = solutions.filter(
+    (solution) =>
+      solution.checked ||
+      solution.mission?.completed
+  ).length;
+
+  const progress =
+    totalCount === 0
+      ? 0
+      : Math.round((completedCount / totalCount) * 100);
+
+  const stageList = [1, 2, 3, 4];
+
+  const currentStage =
+    stageList.find((stage) =>
+      solutions.some(
+        (solution) =>
+          solution.stage === stage &&
+          !solution.checked &&
+          !solution.mission?.completed
+      )
+    ) || 5;
+
+  const nextSolution = solutions.find(
+    (solution) =>
+      solution.stage === currentStage &&
+      !solution.checked &&
+      !solution.mission?.completed
+  );
+
+  const stageTitleMap = {
+    1: "1단계 안전 확보",
+    2: "2단계 환경 준비",
+    3: "3단계 적응 훈련",
+    4: "4단계 화합 유지",
+    5: "화합 유지 단계",
+  };
+
+  const goalMap = {
+    1: "두 반려동물이 다치지 않도록 안전한 거리를 확보하세요.",
+    2: "각자의 공간과 자원을 분리해 갈등 요인을 줄이세요.",
+    3: "짧은 만남과 긍정 보상을 통해 서로에게 익숙해지도록 도와주세요.",
+    4: "좋은 관계 행동을 반복하며 안정적인 공존을 유지하세요.",
+    5: "현재의 좋은 관계를 유지하며 정기적으로 행동 변화를 관찰하세요.",
+  };
+
+  return {
+    totalCount,
+    completedCount,
+    progress,
+    currentStage,
+    currentStageTitle: stageTitleMap[currentStage],
+    nextGoal: nextSolution?.mission?.successCondition || goalMap[currentStage],
+    nextAction: nextSolution?.text || "현재 단계의 미션을 모두 완료했습니다.",
+  };
+};
+
   if (!latest) {
     return (
       <>
@@ -146,6 +208,7 @@ function RelationshipDetail() {
   }
 
   const todayMission = getTodayMission(latest);
+  const harmonyJourney = getHarmonyJourney(latest);
 
   return (
     <>
@@ -216,6 +279,73 @@ function RelationshipDetail() {
             </div>
           </div>
 
+
+          <div className="harmony-journey-card">
+            <div className="harmony-journey-header">
+                <div>
+                <h3>🌿 화합 여정</h3>
+                <p>
+                    미션 완료 여부를 기준으로 관계 개선 진행률을 확인할 수 있습니다.
+                </p>
+                </div>
+
+                <strong>{harmonyJourney.progress}%</strong>
+            </div>
+
+            <div className="journey-progress-bar">
+                <div
+                className="journey-progress-fill"
+                style={{
+                    width: `${harmonyJourney.progress}%`,
+                }}
+                />
+            </div>
+
+            <div className="journey-step-grid">
+                {[1, 2, 3, 4].map((stage) => (
+                <div
+                    key={stage}
+                    className={
+                    harmonyJourney.currentStage === stage
+                        ? "journey-step active"
+                        : harmonyJourney.currentStage > stage
+                        ? "journey-step done"
+                        : "journey-step"
+                    }
+                >
+                    <span>{stage}</span>
+                    <p>
+                    {stage === 1
+                        ? "안전 확보"
+                        : stage === 2
+                        ? "환경 준비"
+                        : stage === 3
+                        ? "적응 훈련"
+                        : "화합 유지"}
+                    </p>
+                </div>
+                ))}
+            </div>
+
+            <div className="journey-current-box">
+                <h4>{harmonyJourney.currentStageTitle}</h4>
+
+                <p>
+                <strong>다음 행동:</strong> {harmonyJourney.nextAction}
+                </p>
+
+                <p>
+                <strong>다음 목표:</strong> {harmonyJourney.nextGoal}
+                </p>
+
+                <span>
+                완료한 미션 {harmonyJourney.completedCount} / 전체 미션{" "}
+                {harmonyJourney.totalCount}
+                </span>
+            </div>
+            </div>
+
+          
           <div className="relationship-section">
             <h3>🍀 단계별 솔루션 & 미션</h3>
 

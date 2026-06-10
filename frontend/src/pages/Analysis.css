@@ -454,3 +454,17 @@
 .custom-behavior-input:focus {
   border-color: #6cab5b;
 }
+
+.pet-choice-card.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f3f4f6;
+  border-color: #ddd;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.pet-choice-card.disabled:hover {
+  transform: none;
+  border-color: #ddd;
+}
