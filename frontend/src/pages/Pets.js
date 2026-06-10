@@ -48,15 +48,43 @@ function Pets() {
 
   
   const fetchPets = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("로그인이 필요합니다.");
+    navigate("/login");
+    return;
+  }
+
+  try {
     const res = await fetch("https://capstone-swkb.onrender.com/pets", {
       headers: {
-        Authorization: localStorage.getItem("token"),
+        Authorization: token,
       },
     });
 
     const data = await res.json();
+
+    if (!res.ok) {
+      console.log("반려동물 조회 실패:", data);
+
+      if (res.status === 401) {
+        alert("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
+
+      alert(data.error || "반려동물 조회 실패");
+      return;
+    }
+
     setPets(Array.isArray(data) ? data : []);
-  };
+  } catch (error) {
+    console.error("반려동물 조회 오류:", error);
+    alert("서버 연결에 실패했습니다.");
+  }
+};
 
 
   useEffect(() => {

@@ -13,6 +13,7 @@ function PetDetail() {
 
   useEffect(() => {
     fetchPet();
+    fetchAnalysis();
   }, []);
 
   const getDefaultIcon = (type) => {
@@ -281,7 +282,7 @@ function PetDetail() {
 
                   <div className="mission-bottom-row">
                     <p className="mission-condition">
-                      <strong>성공 조건:</strong> {mission.successCondition}
+                      <strong>성공 조건:</strong> {mission.successCondition ||"성공조건이 등록되지 않았습니다."}
                     </p>
 
                     <button

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getStageSolutions } from "../data/animalSolutions";
 import "../App.css";
 import "./Analysis.css";
 
@@ -239,7 +240,7 @@ function Analysis() {
 
     const analysisMap = {
 
-      "새-새": {
+      "앵무새-앵무새": {
   result: "🟡 영역 및 사회성 문제 가능",
   detail: `
 새는 종류에 따라 영역 의식과 사회성이 다릅니다.
@@ -297,10 +298,10 @@ function Analysis() {
   ]
 },
 
-"거북-거북": {
+"거북이-거북이": {
   result: "🟢 사육 환경 점검 필요",
   detail: `
-거북은 적절한 온도 구역과 은신처가 필요합니다.
+거북이는 적절한 온도 구역과 은신처가 필요합니다.
 
 온도 차이를 제공하지 못하면
 스트레스와 건강 문제가 발생할 수 있습니다.
@@ -421,7 +422,7 @@ function Analysis() {
 
 },
 
-"강아지-새": {
+"강아지-앵무새": {
 
   result: "🟡 추격 및 스트레스 가능성",
 
@@ -443,7 +444,7 @@ function Analysis() {
 
 },
 
-"강아지-거북": {
+"강아지-거북이": {
 
   result: "🟡 호기심으로 인한 스트레스 가능",
 
@@ -485,7 +486,7 @@ function Analysis() {
 
 },
 
-"고양이-새": {
+"고양이-앵무새": {
 
   result: "🔴 포식 본능 주의",
 
@@ -505,7 +506,7 @@ function Analysis() {
 
 },
 
-"고양이-거북": {
+"고양이-거북이": {
 
   result: "🟢 비교적 안정적이나 관찰 필요",
 
@@ -634,11 +635,16 @@ function Analysis() {
       behaviorCategory: behaviorInfo.category,
 
       relationshipTrend: behaviorInfo.trend,
-
-      solutions: result.recommendation.map((item) => ({
-        text: item,
-        checked: false,
-      })),
+      // 기존 솔루션 저장 방식
+      //solutions: result.recommendation.map((item) => ({
+        //text: item,
+        //checked: false,
+      //})),
+      solutions: getStageSolutions(
+        p1.type,
+        p2.type,
+        behaviorInfo.trend
+      ),
 
       dateTime: new Date(),
     };
