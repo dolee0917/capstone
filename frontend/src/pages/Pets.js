@@ -86,6 +86,16 @@ function Pets() {
   }
 };
 
+const getImageUrl = (image) => {
+  if (!image) return "";
+
+  if (image.startsWith("http")) {
+    return image;
+  }
+
+  return `https://capstone-swkb.onrender.com${image}`;
+};
+
 
   useEffect(() => {
     fetchPets();  
@@ -119,7 +129,7 @@ function Pets() {
             >
               {pet.image ? (
                 <img
-                  src={`https://capstone-swkb.onrender.com${pet.image}`}
+                  src={getImageUrl(pet.image)}
                   alt={pet.name}
                   className="pet-image"
                 />

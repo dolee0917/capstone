@@ -126,6 +126,24 @@ function PetDetail() {
     item.petIds?.map(String).includes(String(pet._id))
   );
 
+  const latestMissionByPet = Object.values(
+  petAnalyses.reduce((acc, item) => {
+    const otherPetName =
+      item.petNames?.find((name) => name !== pet.name) || "다른 반려동물";
+
+    const currentDate = new Date(item.dateTime || item.createdAt);
+    const savedDate = acc[otherPetName]
+      ? new Date(acc[otherPetName].dateTime || acc[otherPetName].createdAt)
+      : null;
+
+    if (!acc[otherPetName] || currentDate > savedDate) {
+      acc[otherPetName] = item;
+    }
+
+    return acc;
+  }, {})
+);
+
   return (
     <div className="pet-detail-page">
       <div className="pet-profile-hero-card">
@@ -254,10 +272,10 @@ function PetDetail() {
         <div className="pet-detail-card">
           <h3>🎯 오늘의 관계 미션</h3>
 
-          {petAnalyses.length === 0 ? (
-            <p>아직 생성된 관계 미션이 없습니다. 먼저 관계 분석을 진행해주세요.</p>
-          ) : (
-            petAnalyses.slice(0, 3).map((item) => {
+          {latestMissionByPet.length === 0 ? (
+              <p>아직 생성된 관계 미션이 없습니다. 먼저 관계 분석을 진행해주세요.</p>
+            ) : (
+              latestMissionByPet.map((item) => {
               const mission = getTodayMission(item);
 
               const otherPets = item.petNames?.filter(
@@ -333,7 +351,9 @@ function PetDetail() {
               <p>{item.result}</p>
 
               {item.behavior && (
-                <p><strong>선택 행동</strong> {item.behavior}</p>
+                <p className="pet-analysis-behavior">
+                  <strong>선택 행동:</strong> {item.behavior}
+                </p>
               )}
 
               {item.solutions?.length > 0 && (
@@ -357,10 +377,11 @@ function PetDetail() {
 
           {stageSolutions.map((solution) => (
             <div key={solution._id || solution.text} className="solution-mission-item">
-              <label className="solution-item">
-                <input type="checkbox" checked={solution.checked} readOnly />
-                <span>{solution.text}</span>
-              </label>
+              <div className="solution-item">
+                <span>
+                  {solution.mission?.completed ? "✅" : "⬜"} {solution.text}
+                </span>
+              </div>
 
               {solution.mission && (
                 <div className="mission-box">
@@ -384,10 +405,11 @@ function PetDetail() {
                           s.text === solution.text
                             ? {
                                 ...s,
-                                mission: {
-                                  ...s.mission,
-                                  completed: !s.mission?.completed,
-                                },
+                                checked: !s.mission?.completed,
+                                  mission: {
+                                    ...s.mission,
+                                    completed: !s.mission?.completed,
+                                  },
                               }
                             : s
                         );

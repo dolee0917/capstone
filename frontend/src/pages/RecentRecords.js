@@ -38,6 +38,13 @@ function RecentRecords() {
       Array.isArray(data) ? data : []
     );
   };
+   // 조합 key 생성
+  const getPairKey = (petNames = []) => {
+
+    return [...petNames]
+      .sort()
+      .join(" ↔ ");
+  };
 
   // 검색 필터
   const filteredRecords = records.filter(
@@ -48,13 +55,45 @@ function RecentRecords() {
         .includes(search.toLowerCase())
   );
 
-  // 조합 key 생성
-  const getPairKey = (petNames = []) => {
+  const groupedRecords = Object.values(
+  filteredRecords.reduce((acc, record) => {
+    const pairKey = getPairKey(record.petNames);
 
-    return [...petNames]
-      .sort()
-      .join(" ↔ ");
+    if (!acc[pairKey]) {
+      acc[pairKey] = {
+        pairKey,
+        records: [],
+      };
+    }
+
+    acc[pairKey].records.push(record);
+
+    return acc;
+  }, {})
+).map((group) => {
+  const sortedRecords = group.records.sort(
+    (a, b) =>
+      new Date(b.dateTime || b.createdAt) -
+      new Date(a.dateTime || a.createdAt)
+  );
+
+  return {
+    ...group,
+    records: sortedRecords,
+    latest: sortedRecords[0],
+    harmonyCount: sortedRecords.filter(
+      (record) => record.relationshipTrend === "harmony"
+    ).length,
+    conflictCount: sortedRecords.filter(
+      (record) => record.relationshipTrend === "conflict"
+    ).length,
+    stressCount: sortedRecords.filter(
+      (record) => record.relationshipTrend === "stress"
+    ).length,
   };
+});
+
+ 
 
   // 조합 옵션
   const pairOptions = [
@@ -277,7 +316,7 @@ function RecentRecords() {
         />
 
         {/* 기록 없음 */}
-        {filteredRecords.length === 0 ? (
+        {groupedRecords.length === 0 ? (
 
           <p className="records-empty">
             아직 기록이 없습니다.
@@ -287,262 +326,77 @@ function RecentRecords() {
 
           <div className="records-list">
 
-            {filteredRecords.map((record) => (
-
-              <div
-                key={record._id}
-                className="record-card"
-                onClick={() =>
-                  setOpenId(
-                    openId === record._id
-                      ? null
-                      : record._id
-                  )
-                }
-              >
-
-                {/* 카드 헤더 */}
-                <div className="record-main">
-
+            {groupedRecords.map((group) => (
+              <div key={group.pairKey} className="record-card">
+                <div
+                  className="record-main"
+                  onClick={() =>
+                    setOpenId(openId === group.pairKey ? null : group.pairKey)
+                  }
+                >
                   <div>
-
-                    <h3>
-                      {record.petNames?.join(" ↔ ")}
-                    </h3>
+                    <h3>{group.pairKey}</h3>
 
                     <p>
-                      {record.result}
+                      최근 결과: {group.latest.result}
                     </p>
 
+                    {group.latest.behavior && (
+                      <p className="record-behavior">
+                        최근 선택 행동: {group.latest.behavior}
+                      </p>
+                    )}
+
+                    <div className="record-summary-badges">
+                      <span className="badge harmony">화합 {group.harmonyCount}</span>
+                      <span className="badge conflict">갈등 {group.conflictCount}</span>
+                      <span className="badge stress">스트레스 {group.stressCount}</span>
+                      <span className="badge total">총 {group.records.length}회</span>
+                    </div>
                   </div>
 
                   <span className="record-date">
-
-                    {record.dateTime
-                      ? new Date(
-                          record.dateTime
-                        ).toLocaleString()
+                    {group.latest.dateTime
+                      ? new Date(group.latest.dateTime).toLocaleString()
                       : "-"}
-
                   </span>
-
                 </div>
 
-                {/* 상세 열림 */}
-                {openId === record._id && (
-
+                {openId === group.pairKey && (
                   <div className="record-detail">
+                    <h4>📌 이 조합의 분석 기록</h4>
 
-                    <p>
+                    {group.records.map((record) => (
+                      <div key={record._id} className="record-history-item">
+                        <div className="record-history-header">
+                          <strong>{record.result}</strong>
+                          <span>
+                            {record.dateTime
+                              ? new Date(record.dateTime).toLocaleString()
+                              : "-"}
+                          </span>
+                        </div>
 
-                      <strong>
-                        요약
-                      </strong>
-
-                      {" "}
-
-                      {record.summary
-                        || "요약 내용이 없습니다."}
-
-                    </p>
-
-                    <p>
-
-                      <strong>
-                        상세 설명
-                      </strong>
-
-                      {" "}
-
-                      {record.detail
-                        || "상세 설명이 없습니다."}
-
-                    </p>
-
-                    {record.behavior && (
-
-                      <p>
-
-                        <strong>
-                          선택 행동
-                        </strong>
-
-                        {" "}
-
-                        {record.behavior}
-
-                      </p>
-
-                    )}
-
-                    {/* 솔루션 */}
-                    {record.solutions?.length > 0 && (
-
-                      <div
-                        className="record-solution-list"
-                        onClick={(e) =>
-                          e.stopPropagation()
-                        }
-                      >
-
-                        <strong>
-                          단계별 솔루션
-                        </strong>
-
-                        {[1, 2, 3, 4].map(
-                          (stage) => {
-
-                            const stageSolutions =
-                              record.solutions.filter(
-                                (solution) =>
-                                  solution.stage
-                                  === stage
-                              );
-
-                            if (
-                              stageSolutions.length === 0
-                            ) return null;
-
-                            const stageTitle =
-                              stageSolutions[0]
-                                .stageTitle
-                              || "솔루션 단계";
-
-                            return (
-
-                              <div
-                                key={stage}
-                                className="solution-stage-box"
-                              >
-
-                                <h4>
-                                  {stage}단계.
-                                  {" "}
-                                  {stageTitle}
-                                </h4>
-
-                                {/* 경고 */}
-                                {stage === 2 &&
-                                  record.solutions.some(
-                                    (solution) =>
-                                      solution.stage === 1 &&
-                                      !solution.checked
-                                  ) && (
-
-                                    <p className="stage-warning">
-
-                                      ⚠️ 먼저 1단계 안전 확보를 완료하는 것을 권장합니다.
-
-                                    </p>
-
-                                  )}
-
-                                {/* 체크리스트 */}
-                                {stageSolutions.map(
-                                  (solution) => (
-
-                                    <label
-                                      key={
-                                        solution._id
-                                        || solution.text
-                                      }
-                                      className="solution-item"
-                                      onClick={(e) =>
-                                        e.stopPropagation()
-                                      }
-                                    >
-
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          solution.checked
-                                        }
-                                        onClick={(e) =>
-                                          e.stopPropagation()
-                                        }
-                                        onChange={async () => {
-
-                                          const updatedSolutions =
-                                            record.solutions.map(
-                                              (s) =>
-
-                                                s.text
-                                                === solution.text
-
-                                                  ? {
-                                                      ...s,
-                                                      checked:
-                                                        !s.checked,
-                                                    }
-
-                                                  : s
-                                            );
-
-                                          await fetch(
-
-                                            `https://capstone-swkb.onrender.com/analysis/${record._id}/solutions`,
-
-                                            {
-                                              method: "PUT",
-
-                                              headers: {
-                                                "Content-Type":
-                                                  "application/json",
-
-                                                Authorization:
-                                                  localStorage.getItem("token"),
-                                              },
-
-                                              body: JSON.stringify({
-                                                solutions:
-                                                  updatedSolutions,
-                                              }),
-                                            }
-
-                                          );
-
-                                          fetchRecords();
-                                        }}
-                                      />
-
-                                      <span>
-                                        {solution.text}
-                                      </span>
-
-                                    </label>
-
-                                  )
-                                )}
-
-                              </div>
-
-                            );
-                          }
+                        {record.behavior && (
+                          <p>
+                            <strong>선택 행동:</strong> {record.behavior}
+                          </p>
                         )}
 
+                        <p>
+                          <strong>상세 설명:</strong>{" "}
+                          {record.detail || "상세 설명이 없습니다."}
+                        </p>
+
+                        <p>
+                          <strong>추천 행동:</strong>{" "}
+                          {record.recommendation || "추천 행동이 없습니다."}
+                        </p>
                       </div>
-
-                    )}
-
-                    <p>
-
-                      <strong>
-                        추천 행동
-                      </strong>
-
-                      {" "}
-
-                      {record.recommendation
-                        || "추천 행동이 없습니다."}
-
-                    </p>
-
+                    ))}
                   </div>
-
                 )}
-
               </div>
-
             ))}
 
           </div>
